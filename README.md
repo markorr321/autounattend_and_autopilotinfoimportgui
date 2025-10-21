@@ -24,7 +24,7 @@ With just **three simple touches**:
 2. **Let Windows install** and run the automated setup  
 3. **Enter technician credentials** when prompted  
 
-The system then:
+This process:
 
 - Wipes and installs **Windows 11 25H2**  
 - Applies all **Windows Updates**  
@@ -32,7 +32,7 @@ The system then:
 - **Imports** the device into **Autopilot**  
 - **Enrolls** the device into **Intune**
 
-All of this occurs automatically — no BAT files, no menus, no PowerShell prompts, and no manual steps after image deployment.
+All of this occurs with just two touches! — no BAT files, no code, no PowerShell prompts, and no manual steps after image deployment.
 
 ---
 
@@ -43,7 +43,7 @@ This process eliminates traditional deployment overhead:
 - No need for **MDT** or **OSD Cloud**  
 - No PowerShell or command-line knowledge required  
 - Supports multiple **GroupTags** without multiple USBs  
-- Fully **hands-off** after boot — the device completes ESP, reboots, and lands at the Windows 11 sign-in screen ready for end users  
+- Only two touches required — one to boot from the USB drive, and one to enter the GroupTag and technician credentials. After that, the process is fully automated: the device completes ESP (Self Deploy Mode), reboots, and lands at the Windows 11 sign-in screen ready for end users.
 
 ---
 
