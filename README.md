@@ -86,6 +86,14 @@ Your USB should be **bootable** and contain both the **Windows 11 ISO files** an
 
 ---
 
+## 🙏 Inspiration & Credits
+
+- **[Steven Weiner](https://www.linkedin.com/in/stevew25/)** — collaboration and early Autopilot deployment work (2019)  
+- **[Jon Towles](https://www.linkedin.com/in/jontowles/)** — for the idea to leverage `autounattend.xml` for Autopilot automation  
+- **[Ugur Koc](https://www.linkedin.com/in/ugurkocde/)** — creator of [Get-WindowsAutoPilotImportGUI](https://github.com/ugurkocde/AutoPilot_Import_GUI), integrated here for a seamless, no-code import experience  
+
+---
+
 ## 🚀 From Boot to Enrollment in two touches — *Autopilot, the way it should be.*
 
 
