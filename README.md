@@ -18,7 +18,7 @@ The system then:
 
 - Wipes and installs **Windows 11 25H2**  
 - Applies all **Windows Updates**  
-- Automatically runs **[Get-WindowsAutoPilotImportGUI](https://github.com/UgurKoc/Get-WindowsAutoPilotImportGUI)** (integrated directly into the unattended setup)  
+- Automatically runs **[Get-WindowsAutoPilotImportGUI](https://github.com/ugurkocde/AutoPilot_Import_GUI)** (integrated directly into the unattended setup)  
 - **Imports** the device into **Autopilot**  
 - **Enrolls** the device into **Intune**
 
@@ -39,6 +39,11 @@ This process eliminates traditional deployment overhead:
 
 ## 🙏 Inspiration & Credits
 
-- **Steven Weiner** — collaboration and early Autopilot deployment work (2019)  
-- **Jon Towles** — for the idea to leverage `autounattend.xml` for Autopilot automation  
-- **Ugur Koc** — creator of [Get-WindowsAutoPilotImportGUI](https://github.com/UgurKoc/Get-WindowsAutoPilotImportGUI), integrated here for a seamless, no-code import experience  
+- **[Steven Weiner](https://www.linkedin.com/in/stevew25/)** — collaboration and early Autopilot deployment work (2019)  
+- **[Jon Towles](https://www.linkedin.com/in/jontowles/)** — for the idea to leverage `autounattend.xml` for Autopilot automation  
+- **[Ugur Koc](https://github.com/ugurkocde/AutoPilot_Import_GUI)** — creator of *Get-WindowsAutoPilotImportGUI*, integrated here for a seamless, no-code import experience  
+
+---
+
+### 🖋️ Author
+Created by **Mark Orr** — inspired by past work modernized for today’s Autopilot environments.  
