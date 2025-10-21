@@ -46,7 +46,7 @@ This process:
 - **Imports** the device into **Autopilot**  
 - **Enrolls** the device into **Intune**
 
-All of this occurs with just two touches! — no BAT files, no code, no PowerShell prompts, and no manual steps after image deployment.
+All of this occurs with just two touches! No BAT files, no code, no PowerShell prompts, and no manual steps after image deployment.
 
 ---
 
