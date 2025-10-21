@@ -42,13 +42,10 @@ This process eliminates traditional deployment overhead:
 
 ---
 
-## 🙏 Inspiration & Credits
+## 🖥️ No Babysitting Required
 
-- **[Steven Weiner](https://www.linkedin.com/in/stevew25/)** — collaboration and early Autopilot deployment work (2019)  
-- **[Jon Towles](https://www.linkedin.com/in/jontowles/)** — for the idea to leverage `autounattend.xml` for Autopilot automation  
-- **[Ugur Koc](https://www.linkedin.com/in/ugurkocde/)** — creator of [Get-WindowsAutoPilotImportGUI](https://github.com/ugurkocde/AutoPilot_Import_GUI), integrated here for a seamless, no-code import experience  
+The setup process runs **completely unattended** — there’s **no need to babysit the GUI** or wait manually for profile assignment.  
+Once the Autopilot profile is assigned and `Get-WindowsAutoPilotImportGUI` completes the import, the **machine Syspreps itself** and **automatically launches into OOBE (Out-Of-Box Experience)** — ready for **Autopilot self-deployment**.
 
----
+Technicians don’t need to monitor setup, click through menus, or trigger reboots. Everything from Windows installation to profile assignment to the final OOBE state happens in a single, fully automated flow.
 
-### 🖋️ Author
-Created by **Mark Orr** — inspired by past work modernized for today’s Autopilot environments.  
