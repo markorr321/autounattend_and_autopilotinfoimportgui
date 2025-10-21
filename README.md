@@ -86,7 +86,7 @@ Your USB should be **bootable** and contain both the **Windows 11 ISO files** an
 
 ---
 
-## 🚀 From boot to Enrollment in two touches — *Autopilot, the way it should be.*
+## 🚀 From Boot to Enrollment in two touches — *Autopilot, the way it should be.*
 
 
 
