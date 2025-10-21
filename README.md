@@ -13,7 +13,7 @@ During the deployment process, a local administrator account named **`tempadmin`
 
 > 🔒 **Security Reminder:**  
 > This account is intended for temporary use only and should be removed after deployment.  
-> As a bonus, this repository includes an **Intune remediation script** that automatically detects and removes the `tempadmin` account post-enrollment.
+> As a bonus, this repository includes an [**Intune remediation script**](https://github.com/markorr321/autounattend_and_autopilotinfoimportgui/tree/main/images) that automatically detects and removes the `tempadmin` account post-enrollment.
 
 ---
 
