@@ -44,7 +44,7 @@ This process eliminates traditional deployment overhead:
 
 ## 🖥️ No Babysitting Required
 
-The setup process runs **completely unattended** — there’s **no need to babysit the GUI** or wait manually for profile assignment.  
+The setup process runs **completely unattended** — there’s **no need to babysit the GUI** or waiting for profile assignment.  
 Once the Autopilot profile is assigned and `Get-WindowsAutoPilotImportGUI` completes the import, the **machine Syspreps itself** and **automatically launches into OOBE (Out-Of-Box Experience)** — ready for **Autopilot self-deployment**.
 
 Technicians don’t need to monitor setup, click through menus, or trigger reboots. Everything from Windows installation to profile assignment to the final OOBE state happens in a single, fully automated flow.
