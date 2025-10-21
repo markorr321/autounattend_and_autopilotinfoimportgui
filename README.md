@@ -10,7 +10,7 @@
 ## 💡 Overview
 This project automates the **end-to-end Autopilot onboarding** process for Windows 11 devices using a custom `autounattend.xml`.
 
-The unattended setup installs Windows, runs updates, imports the device into Autopilot, and enrolls it into Intune — all **without technician scripting or user interaction**.
+The unattended setup installs Windows, runs updates, imports the device into Autopilot, and enrolls it into Intune all **without technician scripting or user interaction**.
 
 ### 🎥 Watch the Example Video
 [![Watch the Example Video](https://img.youtube.com/vi/90yOurzSGT4/0.jpg)](https://youtu.be/90yOurzSGT4?si=8eL8daCTa03LAy8T)
