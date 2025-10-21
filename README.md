@@ -47,16 +47,26 @@ This process eliminates traditional deployment overhead:
 
 ---
 
-## 🖥️ No Babysitting Required
+## 💾 USB Media Layout & Build Guide
 
-The setup process runs **completely unattended** there’s **no need to babysit the GUI** or wait manually for profile assignment.  
-Once the Autopilot profile is assigned and `Get-WindowsAutoPilotImportGUI` completes the import, the **machine Syspreps itself** and **automatically launches into OOBE (Out-Of-Box Experience)** — ready for **Autopilot self-deployment**.
+Your USB should be **bootable** and contain both the **Windows 11 ISO files** and your custom `autounattend.xml` at the root.
 
-Technicians don’t need to monitor setup, click through menus, or trigger reboots. Everything from Windows installation to profile assignment to the final OOBE state happens in a single, fully automated flow.
+![USB Structure](https://github.com/markorr321/autounattend_and_autopilotinfoimportgui/blob/main/images/USB%20Structure.png)
+
+> ⚙️ **Note:**  
+> The `autounattend.xml` file must be placed in the **root directory** of the USB drive for Windows Setup to detect and run it automatically.
 
 ---
 
-## 💾 USB Media Layout & Build Guide
+### 🪟 Creating the Bootable USB
+
+#### Use Rufus (Recommended)
+1. Download and open [Rufus](https://rufus.ie).  
+2. Select your Windows 11 ISO.  
+3. Under **Partition scheme**, choose **GPT** (for UEFI systems).  
+4. Click **Start** to create the bootable media.  
+5. Once complete, copy your `autounattend.xml` file to the **root** of the USB.
+
 
 Your USB should be **bootable** and contain both the **Windows 11 ISO files** and your custom `autounattend.xml` at the root.
 
