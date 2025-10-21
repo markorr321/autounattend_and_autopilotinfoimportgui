@@ -3,11 +3,16 @@
 [![Medium](https://img.shields.io/badge/Medium-000000?style=for-the-badge&logo=medium&logoColor=white)](https://medium.com/@markhunterorr)
 [![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:markorr321@gmail.com)
 
+---
+
 # 🧰 Autopilot-Ready Windows 11 Deployment (25H2)
 
 ## 💡 Overview
 This project automates the **end-to-end Autopilot onboarding** process for Windows 11 devices using a custom `autounattend.xml`.  
 The unattended setup installs Windows, runs updates, imports the device into Autopilot, and enrolls it into Intune — all **without technician scripting or user interaction**.
+
+### 🎥 Watch the Example Video
+[![Watch the Example Video](https://img.youtube.com/vi/90yOurzSGT4/0.jpg)](https://youtu.be/90yOurzSGT4?si=8eL8daCTa03LAy8T)
 
 ---
 
@@ -44,8 +49,14 @@ This process eliminates traditional deployment overhead:
 
 ## 🖥️ No Babysitting Required
 
-The setup process runs **completely unattended** — there’s **no need to babysit the GUI** or waiting for profile assignment.  
+The setup process runs **completely unattended** — there’s **no need to babysit the GUI** or wait manually for profile assignment.  
 Once the Autopilot profile is assigned and `Get-WindowsAutoPilotImportGUI` completes the import, the **machine Syspreps itself** and **automatically launches into OOBE (Out-Of-Box Experience)** — ready for **Autopilot self-deployment**.
 
 Technicians don’t need to monitor setup, click through menus, or trigger reboots. Everything from Windows installation to profile assignment to the final OOBE state happens in a single, fully automated flow.
+
+---
+
+## 💾 USB Media Layout & Build Guide
+
+Your USB should be **bootable** and contain both the **Windows 11 ISO files** and your custom `autounattend.xml` at the root.
 
