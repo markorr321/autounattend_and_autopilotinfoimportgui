@@ -1,0 +1,955 @@
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+	<!--https://schneegans.de/windows/unattend-generator/?LanguageMode=Unattended&UILanguage=en-US&Locale=en-US&Keyboard=00000409&GeoLocation=244&ProcessorArchitecture=amd64&KeepSensitiveFiles=true&ComputerNameMode=Random&CompactOsMode=Never&TimeZoneMode=Implicit&PartitionMode=Unattended&PartitionLayout=GPT&EspSize=300&RecoveryMode=Partition&RecoverySize=1000&DiskAssertionMode=Skip&WindowsEditionMode=Generic&WindowsEdition=pro&InstallFromMode=Automatic&PEMode=Default&UserAccountMode=Unattended&AccountName0=tempadmin&AccountDisplayName0=&AccountPassword0=Passw0rd%21&AccountGroup0=Administrators&AutoLogonMode=Own&PasswordExpirationMode=Unlimited&LockoutMode=Default&HideFiles=Hidden&TaskbarSearch=Box&TaskbarIconsMode=Default&StartTilesMode=Default&StartPinsMode=Default&DisableSmartScreen=true&EnableLongPaths=true&EnableRemoteDesktop=true&AllowPowerShellScripts=true&PreventDeviceEncryption=true&EffectsMode=Default&DesktopIconsMode=Default&StartFoldersMode=Default&WifiMode=Interactive&ExpressSettings=DisableAll&LockKeysMode=Skip&StickyKeysMode=Default&ColorMode=Default&WallpaperMode=Default&LockScreenMode=Default&FirstLogonScript0=%23+Enhanced+FirstRun.ps1+with+Color+Coding+and+Error+Handling%0D%0A%23+Clear+screen+and+set+up%0D%0AClear-Host%0D%0A%24Host.UI.RawUI.WindowTitle+%3D+%22FirstRun+PowerShell+Script%22%0D%0A%0D%0A%23+Color+functions%0D%0Afunction+Write-Header+%7B%0D%0A++++param%28%5Bstring%5D%24Text%29%0D%0A++++Write-Host+%22%22%0D%0A++++Write-Host+%22%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%22+-ForegroundColor+Cyan%0D%0A++++Write-Host+%22++++++++++++++++++++%24Text%22+-ForegroundColor+Cyan%0D%0A++++Write-Host+%22++++++++++++++++++++++Version+1.0%22+-ForegroundColor+Cyan%0D%0A++++Write-Host+%22%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%22+-ForegroundColor+Cyan%0D%0A++++Write-Host+%22%22%0D%0A%7D%0D%0A%0D%0Afunction+Write-Step+%7B%0D%0A++++param%28%5Bstring%5D%24StepNumber%2C+%5Bstring%5D%24Description%29%0D%0A++++Write-Host+%22%5BSTEP+%24StepNumber%5D+%24Description%22+-ForegroundColor+Yellow%0D%0A%7D%0D%0A%0D%0Afunction+Write-Success+%7B%0D%0A++++param%28%5Bstring%5D%24Message%29%0D%0A++++Write-Host+%22%5BSUCCESS%5D+%24Message%22+-ForegroundColor+Green%0D%0A%7D%0D%0A%0D%0Afunction+Write-Error+%7B%0D%0A++++param%28%5Bstring%5D%24Message%29%0D%0A++++Write-Host+%22%5BERROR%5D+%24Message%22+-ForegroundColor+Red%0D%0A%7D%0D%0A%0D%0Afunction+Write-Info+%7B%0D%0A++++param%28%5Bstring%5D%24Message%29%0D%0A++++Write-Host+%22%5BINFO%5D+%24Message%22+-ForegroundColor+Cyan%0D%0A%7D%0D%0A%0D%0A%23+Run+initial+setup+before+GUI%0D%0AWrite-Header+%22AUTOPILOT+IMPORT+HELPER%22%0D%0A%0D%0A%23+Step+1%3A+Set+Execution+Policy%0D%0AWrite-Step+%221%2F4%22+%22Setting+PowerShell+execution+policy...%22%0D%0Atry+%7B%0D%0A++++Set-ExecutionPolicy+Bypass+-Force+-ErrorAction+Stop%0D%0A++++Write-Host+%22Execution+policy+set+to+Bypass.%22+-ForegroundColor+Green%0D%0A%7D+catch+%7B%0D%0A++++Write-Error+%22Failed+to+set+execution+policy%3A+%24%28%24_.Exception.Message%29%22%0D%0A%7D%0D%0A%0D%0A%23+Step+2%3A+Install+NuGet+Provider%0D%0AWrite-Step+%222%2F4%22+%22Installing+NuGet+provider...%22%0D%0Atry+%7B%0D%0A++++Install-PackageProvider+-Name+NuGet+-MinimumVersion+2.8.5.201+-Force+-ErrorAction+Stop+%7C+Out-Null%0D%0A++++Write-Host+%22NuGet+provider+installed.%22+-ForegroundColor+Green%0D%0A%7D+catch+%7B%0D%0A++++Write-Host+%22Retrying+with+TLS+1.2...%22+-ForegroundColor+Yellow%0D%0A++++try+%7B%0D%0A++++++++%5BNet.ServicePointManager%5D%3A%3ASecurityProtocol+%3D+%5BNet.SecurityProtocolType%5D%3A%3ATls12%0D%0A++++++++Install-PackageProvider+-Name+NuGet+-MinimumVersion+2.8.5.201+-Force+-ErrorAction+Stop+%7C+Out-Null%0D%0A++++++++Write-Host+%22NuGet+provider+installed.%22+-ForegroundColor+Green%0D%0A++++%7D+catch+%7B%0D%0A++++++++Write-Error+%22NuGet+installation+failed+after+retry%22%0D%0A++++%7D%0D%0A%7D%0D%0A%0D%0A%23+Step+3%3A+Configure+PowerShell+Gallery%0D%0AWrite-Step+%223%2F4%22+%22Configuring+PowerShell+Gallery...%22%0D%0Atry+%7B%0D%0A++++Set-PSRepository+-Name+PSGallery+-InstallationPolicy+Trusted+-ErrorAction+Stop%0D%0A++++Write-Host+%22PowerShell+Gallery+configured+as+trusted.%22+-ForegroundColor+Green%0D%0A%7D+catch+%7B%0D%0A++++Write-Error+%22Failed+to+configure+PowerShell+Gallery%22%0D%0A%7D%0D%0A%0D%0A%23+Step+4%3A+Launch+GUI%0D%0AWrite-Step+%224%2F4%22+%22Launching+Autopilot+Import+GUI...%22%0D%0AWrite-Host+%22GUI+will+open+shortly...%22+-ForegroundColor+Cyan%0D%0AStart-Sleep+-Seconds+2%0D%0A%0D%0A%0D%0AAdd-Type+-AssemblyName+PresentationFramework%0D%0AAdd-Type+-AssemblyName+System.Windows.Forms%0D%0A%0D%0A%23+XAML+file%0D%0A%24xamlFile+%3D+%40%27%0D%0A%3CWindow+x%3AClass%3D%22WpfApp1.MainWindow%22%0D%0A++++++++xmlns%3D%22http%3A%2F%2Fschemas.microsoft.com%2Fwinfx%2F2006%2Fxaml%2Fpresentation%22%0D%0A++++++++xmlns%3Ax%3D%22http%3A%2F%2Fschemas.microsoft.com%2Fwinfx%2F2006%2Fxaml%22%0D%0A++++++++xmlns%3Ad%3D%22http%3A%2F%2Fschemas.microsoft.com%2Fexpression%2Fblend%2F2008%22%0D%0A++++++++xmlns%3Amc%3D%22http%3A%2F%2Fschemas.openxmlformats.org%2Fmarkup-compatibility%2F2006%22%0D%0A++++++++xmlns%3Alocal%3D%22clr-namespace%3AWpfApp1%22%0D%0A++++++++mc%3AIgnorable%3D%22d%22%0D%0A++++++++ResizeMode%3D%22NoResize%22%0D%0A++++++++Title%3D%22Autopilot+Import+GUI%22+Height%3D%22636%22+Width%3D%22399%22%3E%0D%0A++++%3CGrid%3E%0D%0A++++++++%3CGrid.RowDefinitions%3E%0D%0A++++++++++++%3CRowDefinition+Height%3D%2233*%22%2F%3E%0D%0A++++++++++++%3CRowDefinition+Height%3D%2229*%22%2F%3E%0D%0A++++++++%3C%2FGrid.RowDefinitions%3E%0D%0A++++++++%3CRectangle+HorizontalAlignment%3D%22Left%22+Height%3D%2244%22+Margin%3D%2230%2C228%2C0%2C0%22+Stroke%3D%22Black%22+VerticalAlignment%3D%22Top%22+Width%3D%22331%22%2F%3E%0D%0A++++++++%3CRectangle+HorizontalAlignment%3D%22Left%22+Height%3D%22108%22+Margin%3D%2230%2C104%2C0%2C0%22+Stroke%3D%22Black%22+VerticalAlignment%3D%22Top%22+Width%3D%22331%22%2F%3E%0D%0A++++++++%3CButton+x%3AName%3D%22button_register%22+Content%3D%22Login+and+register+device+in+AutoPilot%22+HorizontalAlignment%3D%22Left%22+Margin%3D%2229%2C28%2C0%2C0%22+VerticalAlignment%3D%22Top%22+Width%3D%22332%22+Height%3D%2226%22+Background%3D%22%23FF8EFF8B%22+FontWeight%3D%22Bold%22+BorderBrush%3D%22Black%22+Grid.Row%3D%221%22%2F%3E%0D%0A++++++++%3CTextBlock+x%3AName%3D%22text_author%22+HorizontalAlignment%3D%22Left%22+Margin%3D%2230%2C233%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Grid.Row%3D%221%22%3E%3CRun+Language%3D%22de-de%22+Text%3D%22Author%22%2F%3E%3C%2FTextBlock%3E%0D%0A++++++++%3CTextBlock+x%3AName%3D%22text_version%22+HorizontalAlignment%3D%22Left%22+Margin%3D%22234%2C233%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Grid.Row%3D%221%22+Width%3D%22127%22+TextAlignment%3D%22Right%22%3E%3CRun+Language%3D%22de-de%22+Text%3D%22Version%22%2F%3E%3C%2FTextBlock%3E%0D%0A++++++++%3CTextBox+x%3AName%3D%22text_output%22+HorizontalAlignment%3D%22Left%22+Margin%3D%2229%2C67%2C0%2C0%22+TextWrapping%3D%22WrapWithOverflow%22+VerticalAlignment%3D%22Top%22+Width%3D%22332%22+Height%3D%22161%22+IsReadOnly%3D%22True%22+HorizontalScrollBarVisibility%3D%22Visible%22+VerticalScrollBarVisibility%3D%22Visible%22+Grid.Row%3D%221%22%2F%3E%0D%0A++++++++%3CButton+x%3AName%3D%22button_check_connectivity%22+Content%3D%22Network+Connectivity+Check%22+HorizontalAlignment%3D%22Left%22+Margin%3D%2229%2C315%2C0%2C0%22+VerticalAlignment%3D%22Top%22+Width%3D%22332%22+Height%3D%2226%22+Background%3D%22%23FFA1CEFF%22+FontWeight%3D%22Bold%22+BorderBrush%3D%22Black%22+Grid.RowSpan%3D%222%22%2F%3E%0D%0A++++++++%3CTextBlock+HorizontalAlignment%3D%22Left%22+Margin%3D%2216%2C10%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Width%3D%22356%22+FontSize%3D%2220%22+TextAlignment%3D%22Center%22+FontWeight%3D%22Bold%22+Text%3D%22Autopilot+Import+GUI%22%2F%3E%0D%0A++++++++%3CTextBlock+HorizontalAlignment%3D%22Left%22+Margin%3D%22239%2C94%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Background%3D%22White%22+Width%3D%22110%22+TextAlignment%3D%22Center%22+Height%3D%2219%22+FontWeight%3D%22Bold%22+FontStyle%3D%22Italic%22%3E%3CRun+Language%3D%22de-de%22+Text%3D%22Device+Information%22%2F%3E%3C%2FTextBlock%3E%0D%0A++++++++%3CButton+x%3AName%3D%22button_howto%22+Content%3D%22Help%22+HorizontalAlignment%3D%22Left%22+Margin%3D%2230%2C64%2C0%2C0%22+VerticalAlignment%3D%22Top%22+Background%3D%22White%22+Width%3D%22127%22%2F%3E%0D%0A++++++++%3CTextBlock+x%3AName%3D%22text_time%22+HorizontalAlignment%3D%22Left%22+Margin%3D%22212%2C42%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Width%3D%2284%22%3E%3CRun+Language%3D%22de-de%22+Text%3D%22Time%22%2F%3E%3C%2FTextBlock%3E%0D%0A++++++++%3CTextBlock+x%3AName%3D%22text_date%22+HorizontalAlignment%3D%22Left%22+Margin%3D%22123%2C42%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Width%3D%2284%22%3E%3CRun+Language%3D%22de-de%22+Text%3D%22Date%22%2F%3E%3C%2FTextBlock%3E%0D%0A++++++++%3CTextBlock+x%3AName%3D%22text_serialnumber%22+HorizontalAlignment%3D%22Left%22+Margin%3D%22128%2C182%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Width%3D%22146%22+Height%3D%2220%22%3E%3CRun+Language%3D%22de-de%22+Text%3D%22Serialnumber%22%2F%3E%3C%2FTextBlock%3E%0D%0A++++++++%3CTextBlock+x%3AName%3D%22text_devicemodel%22+HorizontalAlignment%3D%22Left%22+Margin%3D%22128%2C116%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Width%3D%22146%22+Height%3D%2218%22%3E%3CRun+Language%3D%22de-de%22+Text%3D%22Device+Model%22%2F%3E%3C%2FTextBlock%3E%0D%0A++++++++%3CTextBlock+x%3AName%3D%22text_manufacturer%22+HorizontalAlignment%3D%22Left%22+Margin%3D%22126%2C160%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Height%3D%2218%22%3E%3CRun+Language%3D%22de-de%22+Text%3D%22Manufacturer%22%2F%3E%3C%2FTextBlock%3E%0D%0A++++++++%3CTextBlock+x%3AName%3D%22text_devicename%22+HorizontalAlignment%3D%22Left%22+Margin%3D%22128%2C138%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Width%3D%22146%22+Height%3D%2220%22%3E%3CRun+Text%3D%22Device+%22%2F%3E%3CRun+Language%3D%22de-de%22+Text%3D%22Name%22%2F%3E%3C%2FTextBlock%3E%0D%0A++++++++%3CTextBlock+x%3AName%3D%22text_freespace%22+HorizontalAlignment%3D%22Left%22+Margin%3D%22325%2C116%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Width%3D%2259%22+Height%3D%2218%22%3E%3CRun+Language%3D%22de-de%22+Text%3D%22Free+Space%22%2F%3E%3C%2FTextBlock%3E%0D%0A++++++++%3CTextBlock+HorizontalAlignment%3D%22Left%22+Margin%3D%2241%2C116%2C0%2C0%22+TextWrapping%3D%22Wrap%22+Text%3D%22Device+Model%3A%22+VerticalAlignment%3D%22Top%22+Height%3D%2218%22+FontWeight%3D%22Bold%22%2F%3E%0D%0A++++++++%3CTextBlock+HorizontalAlignment%3D%22Left%22+Margin%3D%2241%2C138%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Height%3D%2219%22+FontWeight%3D%22Bold%22%3E%3CRun+Text%3D%22Device+%22%2F%3E%3CRun+Language%3D%22de-de%22+Text%3D%22Name%22%2F%3E%3CRun+Text%3D%22%3A%22%2F%3E%3C%2FTextBlock%3E%0D%0A++++++++%3CTextBlock+HorizontalAlignment%3D%22Left%22+Margin%3D%2240%2C160%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Height%3D%2219%22+FontWeight%3D%22Bold%22%3E%3CRun+Language%3D%22de-de%22+Text%3D%22Manufacturer%3A%22%2F%3E%3C%2FTextBlock%3E%0D%0A++++++++%3CTextBlock+HorizontalAlignment%3D%22Left%22+Margin%3D%2241%2C182%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Height%3D%2220%22+FontWeight%3D%22Bold%22%3E%3CRun+Language%3D%22de-de%22+Text%3D%22Serialnumber%3A%22%2F%3E%3C%2FTextBlock%3E%0D%0A++++++++%3CTextBlock+HorizontalAlignment%3D%22Left%22+Margin%3D%22212%2C115%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Height%3D%2219%22+FontWeight%3D%22Bold%22%3E%3CRun+Language%3D%22de-de%22+Text%3D%22Free+Storage+in+GB%3A%22%2F%3E%3C%2FTextBlock%3E%0D%0A++++++++%3CTextBlock+x%3AName%3D%22text_internet_connection%22+HorizontalAlignment%3D%22Left%22+Margin%3D%22165%2C64%2C0%2C0%22+TextWrapping%3D%22Wrap%22+Text%3D%22Internet+Connection+Button%22+VerticalAlignment%3D%22Top%22+Height%3D%2220%22+Width%3D%22194%22+TextAlignment%3D%22Center%22%2F%3E%0D%0A++++++++%3CTextBox+x%3AName%3D%22text_grouptag%22+HorizontalAlignment%3D%22Left%22+Margin%3D%2236%2C235%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+Width%3D%22192%22+Height%3D%2230%22+FontSize%3D%2214%22+BorderBrush%3D%22Black%22%2F%3E%0D%0A++++++++%3CButton+x%3AName%3D%22button_grouptag%22+Content%3D%22Save+Group+Tag%22+HorizontalAlignment%3D%22Left%22+Margin%3D%22234%2C235%2C0%2C0%22+VerticalAlignment%3D%22Top%22+Height%3D%2230%22+Width%3D%22120%22+BorderBrush%3D%22Black%22+Background%3D%22%23FFEFFF5C%22+FontWeight%3D%22Bold%22%2F%3E%0D%0A++++++++%3CTextBlock+HorizontalAlignment%3D%22Left%22+Margin%3D%22262%2C217%2C0%2C0%22+TextWrapping%3D%22Wrap%22+VerticalAlignment%3D%22Top%22+FontWeight%3D%22Bold%22+Width%3D%2264%22+Background%3D%22White%22+TextAlignment%3D%22Center%22+FontStyle%3D%22Italic%22%3E%3CRun+Text%3D%22Group%22%2F%3E%3CRun+Text%3D%22+T%22%2F%3E%3CRun+Text%3D%22ag%22%2F%3E%3C%2FTextBlock%3E%0D%0A++++++++%3CButton+x%3AName%3D%22button_windowsupdate%22+Content%3D%22Start+Windows+Update%22+HorizontalAlignment%3D%22Left%22+Margin%3D%2229%2C284%2C0%2C0%22+VerticalAlignment%3D%22Top%22+Width%3D%22162%22+Height%3D%2226%22+Background%3D%22%23FFFFC28B%22+FontWeight%3D%22Bold%22+BorderBrush%3D%22Black%22+%2F%3E%0D%0A++++++++%3CButton+x%3AName%3D%22button_exportcsv%22+Content%3D%22Export+Hash+to+CSV%22+HorizontalAlignment%3D%22Left%22+Margin%3D%22200%2C284%2C0%2C0%22+VerticalAlignment%3D%22Top%22+Width%3D%22161%22+Height%3D%2226%22+Background%3D%22%23FFFF8B8B%22+FontWeight%3D%22Bold%22+BorderBrush%3D%22Black%22%2F%3E%0D%0A++++%3C%2FGrid%3E%0D%0A%3C%2FWindow%3E%0D%0A%0D%0A%27%40%0D%0A%0D%0A%23create+window%0D%0A%24inputXML+%3D+%24xamlFile%0D%0A%24inputXML+%3D+%24inputXML+-replace+%27mc%3AIgnorable%3D%22d%22%27%2C+%27%27+-replace+%22x%3AN%22%2C+%27N%27+-replace+%27%5E%3CWin.*%27%2C+%27%3CWindow%27%0D%0A%5BXML%5D%24XAML+%3D+%24inputXML%0D%0A%0D%0A%23Read+XAML%0D%0A%24reader+%3D+%28New-Object+System.Xml.XmlNodeReader+%24xaml%29%0D%0Atry+%7B%0D%0A++++%24window+%3D+%5BWindows.Markup.XamlReader%5D%3A%3ALoad%28+%24reader+%29%0D%0A%7D%0D%0Acatch+%7B%0D%0A++++Write-Warning+%24_.Exception%0D%0A++++throw%0D%0A%7D%0D%0A%0D%0A%23+Create+variables+based+on+form+control+names.%0D%0A%23+Variable+will+be+named+as+%27var_%3Ccontrol+name%3E%27%0D%0A%24xaml.SelectNodes%28%22%2F%2F*%5B%40Name%5D%22%29+%7C+ForEach-Object+%7B%0D%0A++++%23%22trying+item+%24%28%24_.Name%29%22%3B%0D%0A++++try+%7B%0D%0A++++++++Set-Variable+-Name+%22var_%24%28%24_.Name%29%22+-Value+%24window.FindName%28%24_.Name%29+-ErrorAction+Stop%0D%0A++++%7D%0D%0A++++catch+%7B%0D%0A++++++++throw%0D%0A++++%7D%0D%0A%7D%0D%0A%0D%0A%23+Get-Variable+var_*%0D%0A%0D%0Afunction+Update-ScriptVersion+%7B%0D%0A++++%24ScriptName+%3D+%22Get-WindowsAutopilotImportGUI%22%0D%0A%0D%0A++++%23+Get+the+currently+installed+version%0D%0A++++%24LocalVersion+%3D+%28Get-InstalledScript+-Name+%24ScriptName%29.Version%0D%0A%0D%0A++++%23+Get+the+latest+version+from+the+PowerShell+Gallery%0D%0A++++%24GalleryVersion+%3D+%28Find-Script+-Name+%24ScriptName%29.Version%0D%0A%0D%0A++++%23+Compare+the+versions%0D%0A++++if+%28%24LocalVersion+-lt+%24GalleryVersion%29+%7B%0D%0A++++++++%23+If+a+newer+version+is+found+in+the+PowerShell+Gallery%2C+update+the+script%0D%0A++++++++Update-Script+-Name+%24ScriptName%0D%0A++++++++Write-Output+%22The+script+has+been+updated+to+version+%24GalleryVersion.%22%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+%22You+are+already+using+the+latest+version+of+the+script.%22%0D%0A++++%7D%0D%0A%7D%0D%0A%0D%0A%23+Signaling+that+the+script+starts%0D%0AWrite-Output+%22Starting+the+script...%22%0D%0A%0D%0A%23+Search+and+download+updated+version+of+the+script+if+available%0D%0A%23Update-ScriptVersion%0D%0A%0D%0A%24button_windowsupdate+%3D+%24Window.FindName%28%27button_windowsupdate%27%29%0D%0A%24button_windowsupdate.Add_Click%28%7B%0D%0A++++++++%24script+%3D+%7B%0D%0A++++++++++++%24host.UI.RawUI.ForegroundColor+%3D+%27Green%27%0D%0A++++++++++++Write-Output+%22%60nInstalling+PSWindowsUpdate+module...%22%0D%0A++++++++++++Install-Module+PSWindowsUpdate+-Force%0D%0A++++++++++++Write-Output+%22%60nPSWindowsUpdate+module+installed+successfully.%22%0D%0A%0D%0A++++++++++++%24host.UI.RawUI.ForegroundColor+%3D+%27Yellow%27%0D%0A++++++++++++Write-Output+%22%60nImporting+PSWindowsUpdate+module...%22%0D%0A++++++++++++Import-Module+PSWindowsUpdate%0D%0A++++++++++++Write-Output+%22%60nPSWindowsUpdate+module+imported+successfully.%22%0D%0A%0D%0A++++++++++++%24host.UI.RawUI.ForegroundColor+%3D+%27Cyan%27%0D%0A++++++++++++Write-Output+%22%60nListing+available+Windows+updates...+This+may+take+a+while+...%22%0D%0A++++++++++++Get-WUlist+-MicrosoftUpdate%0D%0A%0D%0A++++++++++++Write-Output+%22%60nInstalling+Windows+updates...%22%0D%0A++++++++++++Install-WindowsUpdate+-MicrosoftUpdate+-AcceptAll+-AutoReboot%0D%0A++++++++++++Write-Output+%22%60nWindows+updates+installation+initiated.%22%0D%0A++++++++++++%24host.UI.RawUI.ForegroundColor+%3D+%27White%27%0D%0A++++++++%7D%0D%0A%0D%0A++++++++%24encodedCommand+%3D+%5BConvert%5D%3A%3AToBase64String%28%5BSystem.Text.Encoding%5D%3A%3AUnicode.GetBytes%28%24script.ToString%28%29%29%29%0D%0A++++++++Start-Process+powershell+-ArgumentList+%22-NoExit%22%2C+%22-EncodedCommand+%24encodedCommand%22+-Verb+runAs%0D%0A++++%7D%29%0D%0A%0D%0A%0D%0A%23+Find+the+button+in+the+window+object%0D%0A%24button_exportcsv+%3D+%24Window.FindName%28%27button_exportcsv%27%29%0D%0A%0D%0A%23+Function+to+show+folder+browser+dialog+and+get+selected+folder+path%0D%0Afunction+Get-FolderPath+%7B%0D%0A++++%5BSystem.Reflection.Assembly%5D%3A%3ALoadWithPartialName%28%22System.windows.forms%22%29+%7C+Out-Null%0D%0A%0D%0A++++%24folderBrowser+%3D+New-Object+System.Windows.Forms.FolderBrowserDialog%0D%0A++++%24folderBrowser.Description+%3D+%22Select+a+folder+to+save+the+Autopilot+CSV+file%22%0D%0A++++%24folderBrowser.RootFolder+%3D+%22MyComputer%22%0D%0A++++%24result+%3D+%24folderBrowser.ShowDialog%28%29%0D%0A++++if+%28%24result+-eq+%22OK%22%29+%7B%0D%0A++++++++return+%24folderBrowser.SelectedPath%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++return+%24null%0D%0A++++%7D%0D%0A%7D%0D%0A%0D%0A%23+Add+click+event+handler%0D%0A%24button_exportcsv.Add_Click%28%7B%0D%0A++++++++%23+Get+the+folder+path%0D%0A++++++++%24folderPath+%3D+Get-FolderPath%0D%0A++++++++if+%28%24folderPath+-eq+%24null%29+%7B%0D%0A++++++++++++Write-Output+%22Export+process+cancelled+by+user.%22%0D%0A++++++++++++return%0D%0A++++++++%7D%0D%0A++++%0D%0A++++++++%23+Build+the+output+file+path%0D%0A++++++++%24filePath+%3D+Join-Path+-Path+%24folderPath+-ChildPath+%27AutopilotHWID.csv%27%0D%0A%0D%0A++++++++%23+Start+a+new+PowerShell+process+to+run+the+command%0D%0A++++++++Start-Process+powershell+-ArgumentList+%27-NoExit%27%2C+%22-Command+%26+%7B%0D%0A++++param%28%60%24filePath%29%0D%0A%0D%0A++++%60%24host.UI.RawUI.ForegroundColor+%3D+%27Green%27%0D%0A++++Write-Output+%27%60nInstalling+Get-WindowsAutopilotInfo+module...%27%0D%0A++++Install-Module+-Name+Get-WindowsAutopilotInfo+-Force%0D%0A%0D%0A++++%60%24host.UI.RawUI.ForegroundColor+%3D+%27Cyan%27%0D%0A++++Write-Output+%27%60nGetting+Windows+Autopilot+Info+and+saving+to+CSV...%27%0D%0A++++Get-WindowsAutopilotInfo+-OutputFile+%60%24filePath%0D%0A++++Write-Output+%27%60nOperation+completed+successfully.+CSV+file+is+saved+at+%27%60%24filePath%0D%0A%0D%0A++++%60%24host.UI.RawUI.ForegroundColor+%3D+%27White%27%0D%0A++++%7D+%24filePath%22+-Verb+runAs%0D%0A++++%7D%29%0D%0A%0D%0A%0D%0A%0D%0A%23+function+to+check+internet+connection%0D%0Afunction+connectivity_check+%7B%0D%0A%0D%0A++++%24ErrorActionPreference+%3D+%27SilentlyContinue%27%0D%0A++++%24WarningPreference+%3D+%27SilentlyContinue%27%0D%0A++++%24OriginalProgressPreference+%3D+%24Global%3AProgressPreference%0D%0A++++%24Global%3AProgressPreference+%3D+%27SilentlyContinue%27%0D%0A%0D%0A++++%24ComputerInfo+%3D+Get-CimInstance+-ClassName+Win32_ComputerSystem%0D%0A++++%24ComputerName+%3D+%24ComputerInfo.Name%0D%0A++++%24Serialnumber+%3D+Get-CimInstance+win32_SystemEnclosure+%7C+Select-Object+-Property+serialnumber%0D%0A%0D%0A++++Write-Output+%22%2D%2D-+Basic+Info+%2D%2D-%22%0D%0A%0D%0A++++Write-Output+%22Computername%3A%22+%24ComputerName%0D%0A++++Write-Output+%22Serialnumber%3A%22+%24Serialnumber.serialnumber%0D%0A%0D%0A++++Write-Output+%60n%0D%0A%0D%0A++++%23+MDM+Registration+Test+reachability%0D%0A++++%23+https%3A%2F%2Fdocs.microsoft.com%2Fde-de%2Fmem%2Fintune%2Fenrollment%2Fwindows-enroll%0D%0A%0D%0A++++Write-Output+-BackgroundColor+DarkBlue+%22%2D%2D-+Checking+connectivity+for%3A+Enterprise+regitration+%2D%2D-%22%0D%0A%0D%0A++++%24MDM_registration+%3D+%28Test-NetConnection+enterpriseregistration.windows.net+-Port+443+%29.TcpTestSucceeded%0D%0A++++If+%28%24MDM_registration+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22MDM_registration+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22MDM_registration+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++%24MDM_enrollment+%3D+%28Test-NetConnection+enterpriseenrollment-s.manage.microsoft.com+-Port+443+%29.TcpTestSucceeded%0D%0A++++If+%28%24MDM_enrollment+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22MDM_enrollment+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22MDM_enrollment+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++Write-Output+%60n%0D%0A%0D%0A++++%23+Autopilot+Test+reachability%0D%0A++++%23+https%3A%2F%2Fdocs.microsoft.com%2Fde-de%2Fmem%2Fautopilot%2Fnetworking-requirements%0D%0A%0D%0A++++Write-Output+-BackgroundColor+DarkBlue+%22%2D%2D-+Checking+connectivity+for%3A+Windows+Autopilot+Deployment+Services+%2D%2D-%22%0D%0A%0D%0A++++%24AutoPilot_ztd+%3D+%28Test-NetConnection+ztd.dds.microsoft.com+-Port+443+%29.TcpTestSucceeded%0D%0A++++If+%28%24AutoPilot_ztd+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22AutoPilot_ztd+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22AutoPilot_ztd+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++%24AutoPilot_cs+%3D+%28Test-NetConnection+cs.dds.microsoft.com+-Port+443+%29.TcpTestSucceeded%0D%0A++++If+%28%24AutoPilot_cs+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22AutoPilot_cs+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22AutoPilot_cs+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++%24AutoPilot_login+%3D+%28Test-NetConnection+login.live.com+-Port+443+%29.TcpTestSucceeded%0D%0A++++If+%28%24AutoPilot_login+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22AutoPilot_login+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22AutoPilot_login+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++Write-Output+%60n%0D%0A%0D%0A++++%23+License+Test+reachability%0D%0A++++%23+https%3A%2F%2Fsupport.microsoft.com%2Fen-us%2Ftopic%2Fwindows-activation-or-validation-fails-with-Error+-code-0x8004fe33-a9afe65e-230b-c1ed-3414-39acd7fddf52%0D%0A%0D%0A++++Write-Output+-BackgroundColor+DarkBlue+%22%2D%2D-+Checking+connectivity+for%3A+License+activation+service+%2D%2D-%22%0D%0A%0D%0A++++%24Licensing_activation+%3D+%28Test-NetConnection+activation.sls.microsoft.com+-Port+443+%29.TcpTestSucceeded%0D%0A++++If+%28%24Licensing_activation+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22Licensing_activation+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22Licensing_activation+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++%24Licensing_validation+%3D+%28Test-NetConnection+validation.sls.microsoft.com+-Port+443+%29.TcpTestSucceeded%0D%0A++++If+%28%24Licensing_validation+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22Licensing_validation+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22Licensing_validation+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++Write-Output+%60n%0D%0A%0D%0A++++%23+WufB+Test+reachability%0D%0A%0D%0A++++Write-Output+-BackgroundColor+DarkBlue+%22%2D%2D-+Checking+connectivity+for%3A+Windows+Update+for+Business+Service+%2D%2D-%22%0D%0A%0D%0A++++%24WufB+%3D+%28Test-NetConnection+update.microsoft.com+-Port+443+%29.TcpTestSucceeded%0D%0A++++If+%28%24WufB+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22WufB+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22WufB+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++Write-Output+%60n%0D%0A%0D%0A++++%23+SSO+Test+reachability%0D%0A%0D%0A++++Write-Output+-BackgroundColor+DarkBlue+%22%2D%2D-+Checking+connectivity+for%3A+Single+Sign-On+%2D%2D-%22%0D%0A%0D%0A++++%24SSO+%3D+%28Test-NetConnection+autologon.microsoftazuread-sso.com+-Port+443+%29.TcpTestSucceeded%0D%0A++++If+%28%24SSO+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22SSO+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22SSO+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++Write-Output+%60n%0D%0A%0D%0A++++%23+TPM+Test+reachability%0D%0A++++%23+https%3A%2F%2Fdocs.microsoft.com%2Fde-de%2Fmem%2Fautopilot%2Fnetworking-requirements%0D%0A%0D%0A++++Write-Output+-BackgroundColor+DarkBlue+%22%2D%2D-+TPM+Connectivity+to+Intel%2C+Qualcomm+and+AMD+%2D%2D-%22%0D%0A%0D%0A++++%24TPM_Intel+%3D+%28Test-NetConnection+ekop.intel.com+-Port+443%29.TcpTestSucceeded%0D%0A++++If+%28%24TPM_Intel+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22TPM_Intel+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22TPM_Intel+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++%24TPM_Qualcomm+%3D+%28Test-NetConnection+ekcert.spserv.microsoft.com+-Port+443%29.TcpTestSucceeded%0D%0A++++If+%28%24TPM_Qualcomm+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22TPM_Qualcomm+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22TPM_Qualcomm+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++%24TPM_AMD+%3D+%28Test-NetConnection+ftpm.amd.com+-Port+443%29.TcpTestSucceeded%0D%0A++++If+%28%24TPM_AMD+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22TPM_AMD+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22TPM_AMD+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++%24TPM_Azure+%3D+%28Test-NetConnection+azure.net+-Port+443%29.TcpTestSucceeded%0D%0A++++If+%28%24TPM_Azure+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22TPM_Azure+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22TPM_Azure+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++Write-Output+%60n%0D%0A%0D%0A++++%23+Intune+%28Config+deployment%29+Test+reachability%0D%0A%0D%0A++++Write-Output+-BackgroundColor+DarkBlue+%22%2D%2D-+Checking+connectivity+for%3A+Config+deployment+and+access+for+managed+devices+%2D%2D-%22%0D%0A%0D%0A++++%24Intune_ConfigDeployment_microsoftonline+%3D+%28Test-NetConnection+login.microsoftonline.com+-Port+443%29.TcpTestSucceeded%0D%0A++++If+%28%24Intune_ConfigDeployment_microsoftonline+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22Intune_ConfigDeployment_microsoftonline+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22Intune_ConfigDeployment_microsoftonline+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++%24Intune_ConfigDeployment_configoffice+%3D+%28Test-NetConnection+config.office.com+-Port+443%29.TcpTestSucceeded%0D%0A++++If+%28%24Intune_ConfigDeployment_configoffice+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22Intune_ConfigDeployment_configoffice+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22Intune_ConfigDeployment_configoffice+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++%24Intune_ConfigDeployment_graph+%3D+%28Test-NetConnection+graph.windows.net+-Port+443%29.TcpTestSucceeded%0D%0A++++If+%28%24Intune_ConfigDeployment_graph+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22Intune_ConfigDeployment_graph+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22Intune_ConfigDeployment_graph+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++Write-Output+%60n%0D%0A%0D%0A++++%23+Intune+%28POSH+and+Win32+Apps+deployment%29+Test+reachability%0D%0A%0D%0A++++Write-Output+-BackgroundColor+DarkBlue+%22%2D%2D-+Checking+connectivity+for%3A+Network+requirements+for+PowerShell+scripts+and+Win32+apps+%2D%2D-%22%0D%0A%0D%0A++++%24Intune_AppDeployment_pri+%3D+%28Test-NetConnection+euprodimedatapri.azureedge.net+-Port+443%29.TcpTestSucceeded%0D%0A++++If+%28%24Intune_AppDeployment_pri+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22Intune_AppDeployment_pri+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22Intune_AppDeployment_pri+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++%24Intune_AppDeployment_sec+%3D+%28Test-NetConnection+euprodimedatasec.azureedge.net+-Port+443%29.TcpTestSucceeded%0D%0A++++If+%28%24Intune_AppDeployment_sec+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22Intune_AppDeployment_sec+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22Intune_AppDeployment_sec+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++%24Intune_AppDeployment_hotfix+%3D+%28Test-NetConnection+euprodimedatahotfix.azureedge.net+-Port+443%29.TcpTestSucceeded%0D%0A++++If+%28%24Intune_AppDeployment_hotfix+-eq+%22True%22%29+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkGreen+%22Intune_AppDeployment_hotfix+-+Success+%22%0D%0A++++++++Write-Output+%40CheckIcon%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A++++++++Write-Output+-NoNewline+-ForegroundColor+DarkRed+%22Intune_AppDeployment_hotfix+-+Error+%22%0D%0A++++++++Write-Output+%40ErrorIcon%0D%0A++++%7D%0D%0A%0D%0A++++Write-Output+%60n%0D%0A%0D%0A++++%24Global%3AProgressPreference+%3D+%24OriginalProgressPreference%0D%0A%0D%0A++++Read-Host+-Prompt+%22Press+Enter+to+exit%22%0D%0A%7D%0D%0A%0D%0Afunction+Get-TimeStamp+%7B%0D%0A++++return+%22%5B%7B0%3AHH%3Amm%3Ass%7D%5D%22+-f+%28Get-Date%29%0D%0A%7D%0D%0A%0D%0Afunction+Write-Log+%7B%0D%0A++++Param%0D%0A++++%28%0D%0A++++++++%24text%0D%0A++++%29%0D%0A%0D%0A++++%22%24text%22+%7C+out-file+%22c%3A%5CAutopilot_Import_GUI_log.txt%22+-Append+-Force%0D%0A%7D%0D%0A%0D%0AWrite-Log+-text+%22%2D%2D-+Start+Logging%3A+%24%28Get-TimeStamp%29+%2D%2D-%22%0D%0A%0D%0A%0D%0A%0D%0A%23Time+and+Date%0D%0A%0D%0A%24timer1+%3D+New-Object+%27System.Windows.Forms.Timer%27%0D%0A%24timer1_Tick+%3D+%7B%0D%0A++++%24var_text_time.Text+%3D+%28Get-Date%29.ToString%28%22HH%3Amm%3Ass%22%29%0D%0A%7D%0D%0A%0D%0A%24timer1.Enabled+%3D+%24True%0D%0A%24timer1.Interval+%3D+1000+%23+in+ms+-%3E+1000+%3D+Update+clock+every+second%0D%0A%24timer1.add_Tick%28%24timer1_Tick%29%0D%0A%0D%0A%24var_text_date.Text+%3D+%28Get-Date%29.ToString%28%22MM%2Fdd%2Fyyyy%22%29%0D%0A%0D%0A%23endregion%0D%0A%0D%0A%23Region+Icons%0D%0A%0D%0A%24CheckIcon+%3D+%40%7B%0D%0A++++Object++++++++++%3D+%5BChar%5D8730%0D%0A++++ForegroundColor+%3D+%27Green%27%0D%0A++++NoNewLine+++++++%3D+%24false%0D%0A%7D%0D%0A%0D%0A%24ErrorIcon+%3D+%40%7B%0D%0A++++Object++++++++++%3D+%5BChar%5D8709%0D%0A++++ForegroundColor+%3D+%27Red%27%0D%0A++++NoNewLine+++++++%3D+%24false%0D%0A%7D%0D%0A%23endregion%0D%0A%0D%0A%23endregion%0D%0A%0D%0A%24var_button_grouptag.Add_Click%7B%0D%0A++++%24Grouptag_input+%3D+%24var_text_grouptag.text%0D%0A++++%24var_text_output.AppendText%28%22%60r%60n%24%28Get-TimeStamp%29+Selected+Group+Tag%3A+%24Grouptag_input%22%29%0D%0A%7D%0D%0A%0D%0A%24var_text_serialnumber.Text+%3D+%28Get-WmiObject+-class+win32_bios%29.SerialNumber%0D%0A%24var_text_devicemodel.Text+%3D+%28Get-CimInstance+-ClassName+Win32_ComputerSystem%29.Model%0D%0A%24var_text_devicename.Text+%3D+%28Get-CimInstance+-ClassName+Win32_ComputerSystem%29.Name%0D%0A%24var_text_manufacturer.Text+%3D+%28Get-CimInstance+-ClassName+Win32_ComputerSystem%29.Manufacturer%0D%0A%24var_text_freespace.Text+%3D+%28Get-CimInstance+-ClassName+Win32_LogicalDisk+%7C+Select-Object+-Property+DeviceID%2C+%40%7B%27Name%27+%3D+%27FreeSpace+%28GB%29%27%3B+Expression+%3D+%7B+%5Bint%5D%28%24_.FreeSpace+%2F+1GB%29+%7D+%7D+%7C+Measure-Object+-Property+%27FreeSpace+%28GB%29%27+-Sum%29.Sum%0D%0A%0D%0A%24var_button_register.Add_Click%7B%0D%0A++++%24var_text_output.AppendText%28%22%60r%60n%24%28Get-TimeStamp%29+Installing+Powershell+Module+Get-WindowsAutopilotInfo.%22%29%0D%0A++++Write-Log+-text+%22%60r%60n%24%28Get-TimeStamp%29+Installing+Powershell+Module+Get-WindowsAutopilotInfo.%22%0D%0A++++%24var_text_output.AppendText%28%22%60r%60n%24%28Get-TimeStamp%29+Running+import+process.%22%29%0D%0A++++Write-Log+-text+%22%60r%60n%24%28Get-TimeStamp%29+Running+import+process.%22%0D%0A++++%24scriptlocation+%3D+%22%24env%3AProgramFiles%5CWindowsPowerShell%5CScripts%22%0D%0A++++Set-Location+%24scriptlocation%0D%0A++++%24GroupTag+%3D+%24var_text_grouptag.text%0D%0A%0D%0A++++if+%28%5Bstring%5D%3A%3AIsNullOrWhiteSpace%28%24GroupTag%29+-eq+%22True%22%29+%7B%0D%0A%0D%0A++++++++%24Start_Register+%3D+%28Start-Process+PowerShell+-Argumentlist+%22%0D%0A++++++++-NoExit%0D%0A++++++++%23-NoProfile%0D%0A++++++++Set-ExecutionPolicy+-Scope+Process+-ExecutionPolicy+RemoteSigned%0D%0A++++++++Install-PackageProvider+-Name+NuGet+-Force%0D%0A++++++++Write-Output+%27Installing+Get-WindowsAutopilotInfo%3A%27%60n%0D%0A++++++++Install-Script+-Name+Get-WindowsAutoPilotInfo+-Force%0D%0A%0D%0A++++++++Write-Output+%27No+Group+Tag+is+selected%27%0D%0A%0D%0A++++++++Write-Output+%27Installing+dependencies+%28Module%3A+WindowsAutopilotIntune%29.%27%60n%0D%0A++++++++Write-Output+%27Opening+Login+Window+after+the+installation+was+successfull%3A%27%60n%0D%0A%0D%0A++++++++.%5CGet-WindowsAutopilotInfo.ps1+-online%0D%0A%0D%0A++++++++Write-Output+%27Everything+completed.+Running+sysprep+now+...%27%60n%0D%0A++++++++Start-Sleep+-s+2%0D%0A++++++++Start-Process+-FilePath+%27C%3A%5CWindows%5CSystem32%5CSysprep%5Csysprep.exe%27+-ArgumentList+%27%2Fgeneralize%27%2C+%27%2Foobe%27%2C+%27%2Freboot%27+-Wait%0D%0A++++++++%22+-Wait%29%0D%0A%0D%0A++++%7D%0D%0A++++else+%7B%0D%0A%0D%0A++++++++%24Start_Register+%3D+%28Start-Process+PowerShell+-Argumentlist+%22%0D%0A++++++++-NoExit%0D%0A++++++++%23-NoProfile%0D%0A++++++++Set-ExecutionPolicy+-Scope+Process+-ExecutionPolicy+RemoteSigned%0D%0A++++++++Install-PackageProvider+-Name+NuGet+-Force%0D%0A++++++++Write-Output+%27Installing+Get-WindowsAutopilotInfo%3A%27%60n%0D%0A++++++++Install-Script+-Name+Get-WindowsAutoPilotInfo+-Force%0D%0A%0D%0A++++++++Write-Output+%27Selected+Group+Tag%3A+%24GroupTag%27%0D%0A%0D%0A++++++++Write-Output+%27Installing+dependencies+%28Module%3A+WindowsAutopilotIntune%29.%27%60n%0D%0A++++++++Write-Output+%27Opening+Login+Window+after+the+installation+was+successfull%3A%27%60n%0D%0A%0D%0A++++++++.%5CGet-WindowsAutopilotInfo.ps1+-online+-assign+-GroupTag+%27%24GroupTag%27%0D%0A%0D%0A++++++++Write-Output+%27Everything+completed.+Running+sysprep+now+...%27%60n%0D%0A++++++++Start-Sleep+-s+2%0D%0A++++++++Start-Process+-FilePath+%27C%3A%5CWindows%5CSystem32%5CSysprep%5Csysprep.exe%27+-ArgumentList+%27%2Fgeneralize%27%2C+%27%2Foobe%27%2C+%27%2Freboot%27+-Wait%0D%0A++++++++%22+-Wait%29%0D%0A++++%7D%0D%0A%0D%0A++++%24var_text_output.AppendText%28%22%60r%60n%24%28Get-TimeStamp%29+Running%3A+Get-WindowsAutoPilotInfo.ps1+-GroupTag+%24GroupTag+-online+-assign+-reboot%22%29%0D%0A++++%23+Scroll+to+bottom+of+the+output+box.%0D%0A++++%24var_text_output.ScrollToEnd%28%29%0D%0A%7D%0D%0A%0D%0Aif+%28Test-Connection+8.8.8.8+-Quiet+-ErrorAction+%22SilentlyContinue%22%29+%7B%0D%0A++++Write-Output+%22Connected+to+the+Internet.%22%0D%0A++++Write-Log+-text+%22%60r%60n%24%28Get-TimeStamp%29+Connected+to+the+Internet.%22%0D%0A++++%24var_text_internet_connection.text+%3D+%22Connected+to+the+Internet.%22%0D%0A++++%24var_text_internet_connection.Fontweight+%3D+%22Bold%22%0D%0A++++%24var_text_internet_connection.Foreground+%3D+%22%2300a300%22%0D%0A%7D%0D%0Aelse+%7B%0D%0A++++Write-Output+%22Not+connected+to+the+Internet.%22%0D%0A++++Write-Log+-text+%22%60r%60n%24%28Get-TimeStamp%29+Not+connected+to+the+Internet.%22%0D%0A++++%24var_text_internet_connection.text+%3D+%22Not+connected+to+the+Internet.%22%0D%0A++++%24var_text_internet_connection.Fontweight+%3D+%22Bold%22%0D%0A++++%24var_text_internet_connection.Foreground+%3D+%22%23a30000%22%0D%0A%7D%0D%0A%0D%0A%24var_button_check_connectivity.Add_Click%7B%0D%0A++++%24var_text_output.AppendText%28%22%60r%60n%24%28Get-TimeStamp%29+Running+Network+connectivity+check.%22%29%0D%0A++++Write-Log+-text+%22%60r%60n%24%28Get-TimeStamp%29+Running+Network+connectivity+check.%22%0D%0A++++%24getfunction+%3D+%28Get-Command+-Type+Function+connectivity_check%29%0D%0A++++%24fullgetfunction+%3D+%27Function+%27+%2B+%24getfunction.Name+%2B+%22+%7B%60n%22+%2B+%24getfunction.Definition+%2B+%22%60n%7D%22%0D%0A%0D%0A++++Start-Process+powershell+-args+%27-noprofile%27%2C+%27-EncodedCommand%27%2C+%28%5BConvert%5D%3A%3AToBase64String%28%5BText.Encoding%5D%3A%3AUnicode.GetBytes%28%22%24fullgetfunction%3B+connectivity_check%22%29%29%29%0D%0A%7D%0D%0A%0D%0A%24var_button_howto.Add_Click%28%7B%0D%0A++++++++%24howToText+%3D+%40%22%0D%0A1.+Login+and+Register+Device+in+AutoPilot%3A+This+will+log+you+in+and+register+your+current+device+in+Microsoft+Autopilot.%0D%0A2.+Network+Connectivity+Check%3A+This+checks+if+your+device+is+connected+to+the+internet.%0D%0A3.+Device+Information%3A+This+area+displays+relevant+information+about+your+device+like+the+device+model%2C+name%2C+manufacturer%2C+serial+number+and+available+storage.%0D%0A4.+Save+Group+Tag%3A+You+can+input+a+group+tag+for+your+device+and+save+it+using+this+functionality.%0D%0A5.+Start+Windows+Update%3A+This+will+start+the+Windows+Update+process+on+your+device.%0D%0A6.+Export+Hash+to+CSV%3A+This+will+export+the+hash+of+your+device+to+a+CSV+file+for+future+reference+or+use.%0D%0A%22%40%0D%0A++++++++%5BSystem.Windows.MessageBox%5D%3A%3AShow%28%24howToText%2C+%22How+does+it+work%3F%22%29%0D%0A++++%7D%29%0D%0A%0D%0A%24var_text_author.Text+%3D+%22%40ugurkocde%22%0D%0A%0D%0Afunction+Get-ScriptVersion+%7B%0D%0A++++%24ScriptName+%3D+%22Get-WindowsAutopilotImportGUI%22%0D%0A++++%23+Get+the+currently+installed+version%0D%0A++++%24LocalVersion+%3D+%28Get-InstalledScript+-Name+%24ScriptName%29.Version%0D%0A++++return+%24LocalVersion%0D%0A%7D%0D%0A%0D%0A%24var_text_version.text+%3D+%22Version%3A+%22+%2B+%28Get-ScriptVersion%29%0D%0A%0D%0A%23+Open+GUI%0D%0A%0D%0A%24Null+%3D+%24window.ShowDialog%28%29%0D%0A&FirstLogonScriptType0=Ps1&WdacMode=Skip-->
+	<settings pass="offlineServicing"></settings>
+	<settings pass="windowsPE">
+		<component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<UILanguage>en-US</UILanguage>
+		</component>
+		<component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<ImageInstall>
+				<OSImage>
+					<Compact>false</Compact>
+					<InstallTo>
+						<DiskID>0</DiskID>
+						<PartitionID>3</PartitionID>
+					</InstallTo>
+				</OSImage>
+			</ImageInstall>
+			<UserData>
+				<ProductKey>
+					<Key>VK7JG-NPHTM-C97JM-9MPGT-3V66T</Key>
+					<WillShowUI>OnError</WillShowUI>
+				</ProductKey>
+				<AcceptEula>true</AcceptEula>
+			</UserData>
+			<UseConfigurationSet>false</UseConfigurationSet>
+			<RunSynchronous>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<Path>cmd.exe /c "&gt;&gt;"X:\diskpart.txt" (echo:SELECT DISK=0&amp;echo:CLEAN&amp;echo:CONVERT GPT&amp;echo:CREATE PARTITION EFI SIZE=300&amp;echo:FORMAT QUICK FS=FAT32 LABEL=^"System^"&amp;echo:ASSIGN LETTER=S&amp;echo:CREATE PARTITION MSR SIZE=16&amp;echo:CREATE PARTITION PRIMARY)"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<Path>cmd.exe /c "&gt;&gt;"X:\diskpart.txt" (echo:SHRINK MINIMUM=1000&amp;echo:FORMAT QUICK FS=NTFS LABEL=^"Windows^"&amp;echo:ASSIGN LETTER=W&amp;echo:CREATE PARTITION PRIMARY&amp;echo:FORMAT QUICK FS=NTFS LABEL=^"Recovery^"&amp;echo:ASSIGN LETTER=R)"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>3</Order>
+					<Path>cmd.exe /c "&gt;&gt;"X:\diskpart.txt" (echo:SET ID=^"de94bba4-06d1-4d40-a16a-bfd50179d6ac^"&amp;echo:GPT ATTRIBUTES=0x8000000000000001)"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>4</Order>
+					<Path>cmd.exe /c "diskpart.exe /s "X:\diskpart.txt" &gt;&gt;"X:\diskpart.log" || ( type "X:\diskpart.log" &amp; echo diskpart encountered an error. &amp; pause &amp; exit /b 1 )"</Path>
+				</RunSynchronousCommand>
+			</RunSynchronous>
+		</component>
+	</settings>
+	<settings pass="generalize"></settings>
+	<settings pass="specialize">
+		<component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<RunSynchronous>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<Path>powershell.exe -WindowStyle Normal -NoProfile -Command "$xml = [xml]::new(); $xml.Load('C:\Windows\Panther\unattend.xml'); $sb = [scriptblock]::Create( $xml.unattend.Extensions.ExtractScript ); Invoke-Command -ScriptBlock $sb -ArgumentList $xml;"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<Path>powershell.exe -WindowStyle Normal -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\Specialize.ps1' -Raw | Invoke-Expression;"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>3</Order>
+					<Path>reg.exe load "HKU\DefaultUser" "C:\Users\Default\NTUSER.DAT"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>4</Order>
+					<Path>powershell.exe -WindowStyle Normal -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\DefaultUser.ps1' -Raw | Invoke-Expression;"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>5</Order>
+					<Path>reg.exe unload "HKU\DefaultUser"</Path>
+				</RunSynchronousCommand>
+			</RunSynchronous>
+		</component>
+	</settings>
+	<settings pass="auditSystem"></settings>
+	<settings pass="auditUser"></settings>
+	<settings pass="oobeSystem">
+		<component name="Microsoft-Windows-International-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<InputLocale>0409:00000409</InputLocale>
+			<SystemLocale>en-US</SystemLocale>
+			<UILanguage>en-US</UILanguage>
+			<UserLocale>en-US</UserLocale>
+		</component>
+		<component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<UserAccounts>
+				<LocalAccounts>
+					<LocalAccount wcm:action="add">
+						<Name>tempadmin</Name>
+						<DisplayName></DisplayName>
+						<Group>Administrators</Group>
+						<Password>
+							<Value>Passw0rd!</Value>
+							<PlainText>true</PlainText>
+						</Password>
+					</LocalAccount>
+				</LocalAccounts>
+			</UserAccounts>
+			<AutoLogon>
+				<Username>tempadmin</Username>
+				<Enabled>true</Enabled>
+				<LogonCount>1</LogonCount>
+				<Password>
+					<Value>Passw0rd!</Value>
+					<PlainText>true</PlainText>
+				</Password>
+			</AutoLogon>
+			<OOBE>
+				<ProtectYourPC>3</ProtectYourPC>
+				<HideEULAPage>true</HideEULAPage>
+				<HideWirelessSetupInOOBE>false</HideWirelessSetupInOOBE>
+				<HideOnlineAccountScreens>false</HideOnlineAccountScreens>
+			</OOBE>
+			<FirstLogonCommands>
+				<SynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<CommandLine>powershell.exe -WindowStyle Normal -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\FirstLogon.ps1' -Raw | Invoke-Expression;"</CommandLine>
+				</SynchronousCommand>
+			</FirstLogonCommands>
+		</component>
+	</settings>
+	<Extensions xmlns="https://schneegans.de/windows/unattend-generator/">
+		<ExtractScript>
+param(
+    [xml] $Document
+);
+
+foreach( $file in $Document.unattend.Extensions.File ) {
+    $path = [System.Environment]::ExpandEnvironmentVariables( $file.GetAttribute( 'path' ) );
+    mkdir -Path( $path | Split-Path -Parent ) -ErrorAction 'SilentlyContinue';
+    $encoding = switch( [System.IO.Path]::GetExtension( $path ) ) {
+        { $_ -in '.ps1', '.xml' } { [System.Text.Encoding]::UTF8; }
+        { $_ -in '.reg', '.vbs', '.js' } { [System.Text.UnicodeEncoding]::new( $false, $true ); }
+        default { [System.Text.Encoding]::Default; }
+    };
+    $bytes = $encoding.GetPreamble() + $encoding.GetBytes( $file.InnerText.Trim() );
+    [System.IO.File]::WriteAllBytes( $path, $bytes );
+}
+		</ExtractScript>
+		<File path="C:\Windows\Setup\Scripts\unattend-01.ps1">
+# Enhanced FirstRun.ps1 with Color Coding and Error Handling
+# Clear screen and set up
+Clear-Host
+$Host.UI.RawUI.WindowTitle = "FirstRun PowerShell Script"
+
+# Color functions
+function Write-Header {
+    param([string]$Text)
+    Write-Host ""
+    Write-Host "================================================================" -ForegroundColor Cyan
+    Write-Host "                    $Text" -ForegroundColor Cyan
+    Write-Host "                      Version 1.0" -ForegroundColor Cyan
+    Write-Host "================================================================" -ForegroundColor Cyan
+    Write-Host ""
+}
+
+function Write-Step {
+    param([string]$StepNumber, [string]$Description)
+    Write-Host "[STEP $StepNumber] $Description" -ForegroundColor Yellow
+}
+
+function Write-Success {
+    param([string]$Message)
+    Write-Host "[SUCCESS] $Message" -ForegroundColor Green
+}
+
+function Write-Error {
+    param([string]$Message)
+    Write-Host "[ERROR] $Message" -ForegroundColor Red
+}
+
+function Write-Info {
+    param([string]$Message)
+    Write-Host "[INFO] $Message" -ForegroundColor Cyan
+}
+
+# Run initial setup before GUI
+Write-Header "AUTOPILOT IMPORT HELPER"
+
+# Step 1: Set Execution Policy
+Write-Step "1/4" "Setting PowerShell execution policy..."
+try {
+    Set-ExecutionPolicy Bypass -Force -ErrorAction Stop
+    Write-Host "Execution policy set to Bypass." -ForegroundColor Green
+} catch {
+    Write-Error "Failed to set execution policy: $($_.Exception.Message)"
+}
+
+# Step 2: Install NuGet Provider
+Write-Step "2/4" "Installing NuGet provider..."
+try {
+    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -ErrorAction Stop | Out-Null
+    Write-Host "NuGet provider installed." -ForegroundColor Green
+} catch {
+    Write-Host "Retrying with TLS 1.2..." -ForegroundColor Yellow
+    try {
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -ErrorAction Stop | Out-Null
+        Write-Host "NuGet provider installed." -ForegroundColor Green
+    } catch {
+        Write-Error "NuGet installation failed after retry"
+    }
+}
+
+# Step 3: Configure PowerShell Gallery
+Write-Step "3/4" "Configuring PowerShell Gallery..."
+try {
+    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted -ErrorAction Stop
+    Write-Host "PowerShell Gallery configured as trusted." -ForegroundColor Green
+} catch {
+    Write-Error "Failed to configure PowerShell Gallery"
+}
+
+# Step 4: Launch GUI
+Write-Step "4/4" "Launching Autopilot Import GUI..."
+Write-Host "GUI will open shortly..." -ForegroundColor Cyan
+Start-Sleep -Seconds 2
+
+
+Add-Type -AssemblyName PresentationFramework
+Add-Type -AssemblyName System.Windows.Forms
+
+# XAML file
+$xamlFile = @'
+&lt;Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        ResizeMode="NoResize"
+        Title="Autopilot Import GUI" Height="636" Width="399"&gt;
+    &lt;Grid&gt;
+        &lt;Grid.RowDefinitions&gt;
+            &lt;RowDefinition Height="33*"/&gt;
+            &lt;RowDefinition Height="29*"/&gt;
+        &lt;/Grid.RowDefinitions&gt;
+        &lt;Rectangle HorizontalAlignment="Left" Height="44" Margin="30,228,0,0" Stroke="Black" VerticalAlignment="Top" Width="331"/&gt;
+        &lt;Rectangle HorizontalAlignment="Left" Height="108" Margin="30,104,0,0" Stroke="Black" VerticalAlignment="Top" Width="331"/&gt;
+        &lt;Button x:Name="button_register" Content="Login and register device in AutoPilot" HorizontalAlignment="Left" Margin="29,28,0,0" VerticalAlignment="Top" Width="332" Height="26" Background="#FF8EFF8B" FontWeight="Bold" BorderBrush="Black" Grid.Row="1"/&gt;
+        &lt;TextBlock x:Name="text_author" HorizontalAlignment="Left" Margin="30,233,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="1"&gt;&lt;Run Language="de-de" Text="Author"/&gt;&lt;/TextBlock&gt;
+        &lt;TextBlock x:Name="text_version" HorizontalAlignment="Left" Margin="234,233,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="1" Width="127" TextAlignment="Right"&gt;&lt;Run Language="de-de" Text="Version"/&gt;&lt;/TextBlock&gt;
+        &lt;TextBox x:Name="text_output" HorizontalAlignment="Left" Margin="29,67,0,0" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" Width="332" Height="161" IsReadOnly="True" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Grid.Row="1"/&gt;
+        &lt;Button x:Name="button_check_connectivity" Content="Network Connectivity Check" HorizontalAlignment="Left" Margin="29,315,0,0" VerticalAlignment="Top" Width="332" Height="26" Background="#FFA1CEFF" FontWeight="Bold" BorderBrush="Black" Grid.RowSpan="2"/&gt;
+        &lt;TextBlock HorizontalAlignment="Left" Margin="16,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="356" FontSize="20" TextAlignment="Center" FontWeight="Bold" Text="Autopilot Import GUI"/&gt;
+        &lt;TextBlock HorizontalAlignment="Left" Margin="239,94,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Background="White" Width="110" TextAlignment="Center" Height="19" FontWeight="Bold" FontStyle="Italic"&gt;&lt;Run Language="de-de" Text="Device Information"/&gt;&lt;/TextBlock&gt;
+        &lt;Button x:Name="button_howto" Content="Help" HorizontalAlignment="Left" Margin="30,64,0,0" VerticalAlignment="Top" Background="White" Width="127"/&gt;
+        &lt;TextBlock x:Name="text_time" HorizontalAlignment="Left" Margin="212,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="84"&gt;&lt;Run Language="de-de" Text="Time"/&gt;&lt;/TextBlock&gt;
+        &lt;TextBlock x:Name="text_date" HorizontalAlignment="Left" Margin="123,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="84"&gt;&lt;Run Language="de-de" Text="Date"/&gt;&lt;/TextBlock&gt;
+        &lt;TextBlock x:Name="text_serialnumber" HorizontalAlignment="Left" Margin="128,182,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="146" Height="20"&gt;&lt;Run Language="de-de" Text="Serialnumber"/&gt;&lt;/TextBlock&gt;
+        &lt;TextBlock x:Name="text_devicemodel" HorizontalAlignment="Left" Margin="128,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="146" Height="18"&gt;&lt;Run Language="de-de" Text="Device Model"/&gt;&lt;/TextBlock&gt;
+        &lt;TextBlock x:Name="text_manufacturer" HorizontalAlignment="Left" Margin="126,160,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="18"&gt;&lt;Run Language="de-de" Text="Manufacturer"/&gt;&lt;/TextBlock&gt;
+        &lt;TextBlock x:Name="text_devicename" HorizontalAlignment="Left" Margin="128,138,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="146" Height="20"&gt;&lt;Run Text="Device "/&gt;&lt;Run Language="de-de" Text="Name"/&gt;&lt;/TextBlock&gt;
+        &lt;TextBlock x:Name="text_freespace" HorizontalAlignment="Left" Margin="325,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59" Height="18"&gt;&lt;Run Language="de-de" Text="Free Space"/&gt;&lt;/TextBlock&gt;
+        &lt;TextBlock HorizontalAlignment="Left" Margin="41,116,0,0" TextWrapping="Wrap" Text="Device Model:" VerticalAlignment="Top" Height="18" FontWeight="Bold"/&gt;
+        &lt;TextBlock HorizontalAlignment="Left" Margin="41,138,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="19" FontWeight="Bold"&gt;&lt;Run Text="Device "/&gt;&lt;Run Language="de-de" Text="Name"/&gt;&lt;Run Text=":"/&gt;&lt;/TextBlock&gt;
+        &lt;TextBlock HorizontalAlignment="Left" Margin="40,160,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="19" FontWeight="Bold"&gt;&lt;Run Language="de-de" Text="Manufacturer:"/&gt;&lt;/TextBlock&gt;
+        &lt;TextBlock HorizontalAlignment="Left" Margin="41,182,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" FontWeight="Bold"&gt;&lt;Run Language="de-de" Text="Serialnumber:"/&gt;&lt;/TextBlock&gt;
+        &lt;TextBlock HorizontalAlignment="Left" Margin="212,115,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="19" FontWeight="Bold"&gt;&lt;Run Language="de-de" Text="Free Storage in GB:"/&gt;&lt;/TextBlock&gt;
+        &lt;TextBlock x:Name="text_internet_connection" HorizontalAlignment="Left" Margin="165,64,0,0" TextWrapping="Wrap" Text="Internet Connection Button" VerticalAlignment="Top" Height="20" Width="194" TextAlignment="Center"/&gt;
+        &lt;TextBox x:Name="text_grouptag" HorizontalAlignment="Left" Margin="36,235,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="192" Height="30" FontSize="14" BorderBrush="Black"/&gt;
+        &lt;Button x:Name="button_grouptag" Content="Save Group Tag" HorizontalAlignment="Left" Margin="234,235,0,0" VerticalAlignment="Top" Height="30" Width="120" BorderBrush="Black" Background="#FFEFFF5C" FontWeight="Bold"/&gt;
+        &lt;TextBlock HorizontalAlignment="Left" Margin="262,217,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" Width="64" Background="White" TextAlignment="Center" FontStyle="Italic"&gt;&lt;Run Text="Group"/&gt;&lt;Run Text=" T"/&gt;&lt;Run Text="ag"/&gt;&lt;/TextBlock&gt;
+        &lt;Button x:Name="button_windowsupdate" Content="Start Windows Update" HorizontalAlignment="Left" Margin="29,284,0,0" VerticalAlignment="Top" Width="162" Height="26" Background="#FFFFC28B" FontWeight="Bold" BorderBrush="Black" /&gt;
+        &lt;Button x:Name="button_exportcsv" Content="Export Hash to CSV" HorizontalAlignment="Left" Margin="200,284,0,0" VerticalAlignment="Top" Width="161" Height="26" Background="#FFFF8B8B" FontWeight="Bold" BorderBrush="Black"/&gt;
+    &lt;/Grid&gt;
+&lt;/Window&gt;
+
+'@
+
+#create window
+$inputXML = $xamlFile
+$inputXML = $inputXML -replace 'mc:Ignorable="d"', '' -replace "x:N", 'N' -replace '^&lt;Win.*', '&lt;Window'
+[XML]$XAML = $inputXML
+
+#Read XAML
+$reader = (New-Object System.Xml.XmlNodeReader $xaml)
+try {
+    $window = [Windows.Markup.XamlReader]::Load( $reader )
+}
+catch {
+    Write-Warning $_.Exception
+    throw
+}
+
+# Create variables based on form control names.
+# Variable will be named as 'var_&lt;control name&gt;'
+$xaml.SelectNodes("//*[@Name]") | ForEach-Object {
+    #"trying item $($_.Name)";
+    try {
+        Set-Variable -Name "var_$($_.Name)" -Value $window.FindName($_.Name) -ErrorAction Stop
+    }
+    catch {
+        throw
+    }
+}
+
+# Get-Variable var_*
+
+function Update-ScriptVersion {
+    $ScriptName = "Get-WindowsAutopilotImportGUI"
+
+    # Get the currently installed version
+    $LocalVersion = (Get-InstalledScript -Name $ScriptName).Version
+
+    # Get the latest version from the PowerShell Gallery
+    $GalleryVersion = (Find-Script -Name $ScriptName).Version
+
+    # Compare the versions
+    if ($LocalVersion -lt $GalleryVersion) {
+        # If a newer version is found in the PowerShell Gallery, update the script
+        Update-Script -Name $ScriptName
+        Write-Output "The script has been updated to version $GalleryVersion."
+    }
+    else {
+        Write-Output "You are already using the latest version of the script."
+    }
+}
+
+# Signaling that the script starts
+Write-Output "Starting the script..."
+
+# Search and download updated version of the script if available
+#Update-ScriptVersion
+
+$button_windowsupdate = $Window.FindName('button_windowsupdate')
+$button_windowsupdate.Add_Click({
+        $script = {
+            $host.UI.RawUI.ForegroundColor = 'Green'
+            Write-Output "`nInstalling PSWindowsUpdate module..."
+            Install-Module PSWindowsUpdate -Force
+            Write-Output "`nPSWindowsUpdate module installed successfully."
+
+            $host.UI.RawUI.ForegroundColor = 'Yellow'
+            Write-Output "`nImporting PSWindowsUpdate module..."
+            Import-Module PSWindowsUpdate
+            Write-Output "`nPSWindowsUpdate module imported successfully."
+
+            $host.UI.RawUI.ForegroundColor = 'Cyan'
+            Write-Output "`nListing available Windows updates... This may take a while ..."
+            Get-WUlist -MicrosoftUpdate
+
+            Write-Output "`nInstalling Windows updates..."
+            Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -AutoReboot
+            Write-Output "`nWindows updates installation initiated."
+            $host.UI.RawUI.ForegroundColor = 'White'
+        }
+
+        $encodedCommand = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($script.ToString()))
+        Start-Process powershell -ArgumentList "-NoExit", "-EncodedCommand $encodedCommand" -Verb runAs
+    })
+
+
+# Find the button in the window object
+$button_exportcsv = $Window.FindName('button_exportcsv')
+
+# Function to show folder browser dialog and get selected folder path
+function Get-FolderPath {
+    [System.Reflection.Assembly]::LoadWithPartialName("System.windows.forms") | Out-Null
+
+    $folderBrowser = New-Object System.Windows.Forms.FolderBrowserDialog
+    $folderBrowser.Description = "Select a folder to save the Autopilot CSV file"
+    $folderBrowser.RootFolder = "MyComputer"
+    $result = $folderBrowser.ShowDialog()
+    if ($result -eq "OK") {
+        return $folderBrowser.SelectedPath
+    }
+    else {
+        return $null
+    }
+}
+
+# Add click event handler
+$button_exportcsv.Add_Click({
+        # Get the folder path
+        $folderPath = Get-FolderPath
+        if ($folderPath -eq $null) {
+            Write-Output "Export process cancelled by user."
+            return
+        }
+    
+        # Build the output file path
+        $filePath = Join-Path -Path $folderPath -ChildPath 'AutopilotHWID.csv'
+
+        # Start a new PowerShell process to run the command
+        Start-Process powershell -ArgumentList '-NoExit', "-Command &amp; {
+    param(`$filePath)
+
+    `$host.UI.RawUI.ForegroundColor = 'Green'
+    Write-Output '`nInstalling Get-WindowsAutopilotInfo module...'
+    Install-Module -Name Get-WindowsAutopilotInfo -Force
+
+    `$host.UI.RawUI.ForegroundColor = 'Cyan'
+    Write-Output '`nGetting Windows Autopilot Info and saving to CSV...'
+    Get-WindowsAutopilotInfo -OutputFile `$filePath
+    Write-Output '`nOperation completed successfully. CSV file is saved at '`$filePath
+
+    `$host.UI.RawUI.ForegroundColor = 'White'
+    } $filePath" -Verb runAs
+    })
+
+
+
+# function to check internet connection
+function connectivity_check {
+
+    $ErrorActionPreference = 'SilentlyContinue'
+    $WarningPreference = 'SilentlyContinue'
+    $OriginalProgressPreference = $Global:ProgressPreference
+    $Global:ProgressPreference = 'SilentlyContinue'
+
+    $ComputerInfo = Get-CimInstance -ClassName Win32_ComputerSystem
+    $ComputerName = $ComputerInfo.Name
+    $Serialnumber = Get-CimInstance win32_SystemEnclosure | Select-Object -Property serialnumber
+
+    Write-Output "--- Basic Info ---"
+
+    Write-Output "Computername:" $ComputerName
+    Write-Output "Serialnumber:" $Serialnumber.serialnumber
+
+    Write-Output `n
+
+    # MDM Registration Test reachability
+    # https://docs.microsoft.com/de-de/mem/intune/enrollment/windows-enroll
+
+    Write-Output -BackgroundColor DarkBlue "--- Checking connectivity for: Enterprise regitration ---"
+
+    $MDM_registration = (Test-NetConnection enterpriseregistration.windows.net -Port 443 ).TcpTestSucceeded
+    If ($MDM_registration -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "MDM_registration - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "MDM_registration - Error "
+        Write-Output @ErrorIcon
+    }
+
+    $MDM_enrollment = (Test-NetConnection enterpriseenrollment-s.manage.microsoft.com -Port 443 ).TcpTestSucceeded
+    If ($MDM_enrollment -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "MDM_enrollment - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "MDM_enrollment - Error "
+        Write-Output @ErrorIcon
+    }
+
+    Write-Output `n
+
+    # Autopilot Test reachability
+    # https://docs.microsoft.com/de-de/mem/autopilot/networking-requirements
+
+    Write-Output -BackgroundColor DarkBlue "--- Checking connectivity for: Windows Autopilot Deployment Services ---"
+
+    $AutoPilot_ztd = (Test-NetConnection ztd.dds.microsoft.com -Port 443 ).TcpTestSucceeded
+    If ($AutoPilot_ztd -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "AutoPilot_ztd - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "AutoPilot_ztd - Error "
+        Write-Output @ErrorIcon
+    }
+
+    $AutoPilot_cs = (Test-NetConnection cs.dds.microsoft.com -Port 443 ).TcpTestSucceeded
+    If ($AutoPilot_cs -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "AutoPilot_cs - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "AutoPilot_cs - Error "
+        Write-Output @ErrorIcon
+    }
+
+    $AutoPilot_login = (Test-NetConnection login.live.com -Port 443 ).TcpTestSucceeded
+    If ($AutoPilot_login -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "AutoPilot_login - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "AutoPilot_login - Error "
+        Write-Output @ErrorIcon
+    }
+
+    Write-Output `n
+
+    # License Test reachability
+    # https://support.microsoft.com/en-us/topic/windows-activation-or-validation-fails-with-Error -code-0x8004fe33-a9afe65e-230b-c1ed-3414-39acd7fddf52
+
+    Write-Output -BackgroundColor DarkBlue "--- Checking connectivity for: License activation service ---"
+
+    $Licensing_activation = (Test-NetConnection activation.sls.microsoft.com -Port 443 ).TcpTestSucceeded
+    If ($Licensing_activation -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "Licensing_activation - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "Licensing_activation - Error "
+        Write-Output @ErrorIcon
+    }
+
+    $Licensing_validation = (Test-NetConnection validation.sls.microsoft.com -Port 443 ).TcpTestSucceeded
+    If ($Licensing_validation -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "Licensing_validation - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "Licensing_validation - Error "
+        Write-Output @ErrorIcon
+    }
+
+    Write-Output `n
+
+    # WufB Test reachability
+
+    Write-Output -BackgroundColor DarkBlue "--- Checking connectivity for: Windows Update for Business Service ---"
+
+    $WufB = (Test-NetConnection update.microsoft.com -Port 443 ).TcpTestSucceeded
+    If ($WufB -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "WufB - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "WufB - Error "
+        Write-Output @ErrorIcon
+    }
+
+    Write-Output `n
+
+    # SSO Test reachability
+
+    Write-Output -BackgroundColor DarkBlue "--- Checking connectivity for: Single Sign-On ---"
+
+    $SSO = (Test-NetConnection autologon.microsoftazuread-sso.com -Port 443 ).TcpTestSucceeded
+    If ($SSO -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "SSO - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "SSO - Error "
+        Write-Output @ErrorIcon
+    }
+
+    Write-Output `n
+
+    # TPM Test reachability
+    # https://docs.microsoft.com/de-de/mem/autopilot/networking-requirements
+
+    Write-Output -BackgroundColor DarkBlue "--- TPM Connectivity to Intel, Qualcomm and AMD ---"
+
+    $TPM_Intel = (Test-NetConnection ekop.intel.com -Port 443).TcpTestSucceeded
+    If ($TPM_Intel -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "TPM_Intel - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "TPM_Intel - Error "
+        Write-Output @ErrorIcon
+    }
+
+    $TPM_Qualcomm = (Test-NetConnection ekcert.spserv.microsoft.com -Port 443).TcpTestSucceeded
+    If ($TPM_Qualcomm -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "TPM_Qualcomm - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "TPM_Qualcomm - Error "
+        Write-Output @ErrorIcon
+    }
+
+    $TPM_AMD = (Test-NetConnection ftpm.amd.com -Port 443).TcpTestSucceeded
+    If ($TPM_AMD -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "TPM_AMD - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "TPM_AMD - Error "
+        Write-Output @ErrorIcon
+    }
+
+    $TPM_Azure = (Test-NetConnection azure.net -Port 443).TcpTestSucceeded
+    If ($TPM_Azure -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "TPM_Azure - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "TPM_Azure - Error "
+        Write-Output @ErrorIcon
+    }
+
+    Write-Output `n
+
+    # Intune (Config deployment) Test reachability
+
+    Write-Output -BackgroundColor DarkBlue "--- Checking connectivity for: Config deployment and access for managed devices ---"
+
+    $Intune_ConfigDeployment_microsoftonline = (Test-NetConnection login.microsoftonline.com -Port 443).TcpTestSucceeded
+    If ($Intune_ConfigDeployment_microsoftonline -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "Intune_ConfigDeployment_microsoftonline - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "Intune_ConfigDeployment_microsoftonline - Error "
+        Write-Output @ErrorIcon
+    }
+
+    $Intune_ConfigDeployment_configoffice = (Test-NetConnection config.office.com -Port 443).TcpTestSucceeded
+    If ($Intune_ConfigDeployment_configoffice -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "Intune_ConfigDeployment_configoffice - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "Intune_ConfigDeployment_configoffice - Error "
+        Write-Output @ErrorIcon
+    }
+
+    $Intune_ConfigDeployment_graph = (Test-NetConnection graph.windows.net -Port 443).TcpTestSucceeded
+    If ($Intune_ConfigDeployment_graph -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "Intune_ConfigDeployment_graph - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "Intune_ConfigDeployment_graph - Error "
+        Write-Output @ErrorIcon
+    }
+
+    Write-Output `n
+
+    # Intune (POSH and Win32 Apps deployment) Test reachability
+
+    Write-Output -BackgroundColor DarkBlue "--- Checking connectivity for: Network requirements for PowerShell scripts and Win32 apps ---"
+
+    $Intune_AppDeployment_pri = (Test-NetConnection euprodimedatapri.azureedge.net -Port 443).TcpTestSucceeded
+    If ($Intune_AppDeployment_pri -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "Intune_AppDeployment_pri - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "Intune_AppDeployment_pri - Error "
+        Write-Output @ErrorIcon
+    }
+
+    $Intune_AppDeployment_sec = (Test-NetConnection euprodimedatasec.azureedge.net -Port 443).TcpTestSucceeded
+    If ($Intune_AppDeployment_sec -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "Intune_AppDeployment_sec - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "Intune_AppDeployment_sec - Error "
+        Write-Output @ErrorIcon
+    }
+
+    $Intune_AppDeployment_hotfix = (Test-NetConnection euprodimedatahotfix.azureedge.net -Port 443).TcpTestSucceeded
+    If ($Intune_AppDeployment_hotfix -eq "True") {
+        Write-Output -NoNewline -ForegroundColor DarkGreen "Intune_AppDeployment_hotfix - Success "
+        Write-Output @CheckIcon
+    }
+    else {
+        Write-Output -NoNewline -ForegroundColor DarkRed "Intune_AppDeployment_hotfix - Error "
+        Write-Output @ErrorIcon
+    }
+
+    Write-Output `n
+
+    $Global:ProgressPreference = $OriginalProgressPreference
+
+    Read-Host -Prompt "Press Enter to exit"
+}
+
+function Get-TimeStamp {
+    return "[{0:HH:mm:ss}]" -f (Get-Date)
+}
+
+function Write-Log {
+    Param
+    (
+        $text
+    )
+
+    "$text" | out-file "c:\Autopilot_Import_GUI_log.txt" -Append -Force
+}
+
+Write-Log -text "--- Start Logging: $(Get-TimeStamp) ---"
+
+
+
+#Time and Date
+
+$timer1 = New-Object 'System.Windows.Forms.Timer'
+$timer1_Tick = {
+    $var_text_time.Text = (Get-Date).ToString("HH:mm:ss")
+}
+
+$timer1.Enabled = $True
+$timer1.Interval = 1000 # in ms -&gt; 1000 = Update clock every second
+$timer1.add_Tick($timer1_Tick)
+
+$var_text_date.Text = (Get-Date).ToString("MM/dd/yyyy")
+
+#endregion
+
+#Region Icons
+
+$CheckIcon = @{
+    Object          = [Char]8730
+    ForegroundColor = 'Green'
+    NoNewLine       = $false
+}
+
+$ErrorIcon = @{
+    Object          = [Char]8709
+    ForegroundColor = 'Red'
+    NoNewLine       = $false
+}
+#endregion
+
+#endregion
+
+$var_button_grouptag.Add_Click{
+    $Grouptag_input = $var_text_grouptag.text
+    $var_text_output.AppendText("`r`n$(Get-TimeStamp) Selected Group Tag: $Grouptag_input")
+}
+
+$var_text_serialnumber.Text = (Get-WmiObject -class win32_bios).SerialNumber
+$var_text_devicemodel.Text = (Get-CimInstance -ClassName Win32_ComputerSystem).Model
+$var_text_devicename.Text = (Get-CimInstance -ClassName Win32_ComputerSystem).Name
+$var_text_manufacturer.Text = (Get-CimInstance -ClassName Win32_ComputerSystem).Manufacturer
+$var_text_freespace.Text = (Get-CimInstance -ClassName Win32_LogicalDisk | Select-Object -Property DeviceID, @{'Name' = 'FreeSpace (GB)'; Expression = { [int]($_.FreeSpace / 1GB) } } | Measure-Object -Property 'FreeSpace (GB)' -Sum).Sum
+
+$var_button_register.Add_Click{
+    $var_text_output.AppendText("`r`n$(Get-TimeStamp) Installing Powershell Module Get-WindowsAutopilotInfo.")
+    Write-Log -text "`r`n$(Get-TimeStamp) Installing Powershell Module Get-WindowsAutopilotInfo."
+    $var_text_output.AppendText("`r`n$(Get-TimeStamp) Running import process.")
+    Write-Log -text "`r`n$(Get-TimeStamp) Running import process."
+    $scriptlocation = "$env:ProgramFiles\WindowsPowerShell\Scripts"
+    Set-Location $scriptlocation
+    $GroupTag = $var_text_grouptag.text
+
+    if ([string]::IsNullOrWhiteSpace($GroupTag) -eq "True") {
+
+        $Start_Register = (Start-Process PowerShell -Argumentlist "
+        -NoExit
+        #-NoProfile
+        Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+        Install-PackageProvider -Name NuGet -Force
+        Write-Output 'Installing Get-WindowsAutopilotInfo:'`n
+        Install-Script -Name Get-WindowsAutoPilotInfo -Force
+
+        Write-Output 'No Group Tag is selected'
+
+        Write-Output 'Installing dependencies (Module: WindowsAutopilotIntune).'`n
+        Write-Output 'Opening Login Window after the installation was successfull:'`n
+
+        .\Get-WindowsAutopilotInfo.ps1 -online
+
+        Write-Output 'Everything completed. Running sysprep now ...'`n
+        Start-Sleep -s 2
+        Start-Process -FilePath 'C:\Windows\System32\Sysprep\sysprep.exe' -ArgumentList '/oobe', '/reboot' -Wait
+        " -Wait)
+
+    }
+    else {
+
+        $Start_Register = (Start-Process PowerShell -Argumentlist "
+        -NoExit
+        #-NoProfile
+        Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+        Install-PackageProvider -Name NuGet -Force
+        Write-Output 'Installing Get-WindowsAutopilotInfo:'`n
+        Install-Script -Name Get-WindowsAutoPilotInfo -Force
+
+        Write-Output 'Selected Group Tag: $GroupTag'
+
+        Write-Output 'Installing dependencies (Module: WindowsAutopilotIntune).'`n
+        Write-Output 'Opening Login Window after the installation was successfull:'`n
+
+        .\Get-WindowsAutopilotInfo.ps1 -online -assign -GroupTag '$GroupTag'
+
+        Write-Output 'Everything completed. Running sysprep now ...'`n
+        Start-Sleep -s 2
+        Start-Process -FilePath 'C:\Windows\System32\Sysprep\sysprep.exe' -ArgumentList '/oobe', '/reboot' -Wait
+        " -Wait)
+    }
+
+    $var_text_output.AppendText("`r`n$(Get-TimeStamp) Running: Get-WindowsAutoPilotInfo.ps1 -GroupTag $GroupTag -online -assign -reboot")
+    # Scroll to bottom of the output box.
+    $var_text_output.ScrollToEnd()
+}
+
+if (Test-Connection 8.8.8.8 -Quiet -ErrorAction "SilentlyContinue") {
+    Write-Output "Connected to the Internet."
+    Write-Log -text "`r`n$(Get-TimeStamp) Connected to the Internet."
+    $var_text_internet_connection.text = "Connected to the Internet."
+    $var_text_internet_connection.Fontweight = "Bold"
+    $var_text_internet_connection.Foreground = "#00a300"
+}
+else {
+    Write-Output "Not connected to the Internet."
+    Write-Log -text "`r`n$(Get-TimeStamp) Not connected to the Internet."
+    $var_text_internet_connection.text = "Not connected to the Internet."
+    $var_text_internet_connection.Fontweight = "Bold"
+    $var_text_internet_connection.Foreground = "#a30000"
+}
+
+$var_button_check_connectivity.Add_Click{
+    $var_text_output.AppendText("`r`n$(Get-TimeStamp) Running Network connectivity check.")
+    Write-Log -text "`r`n$(Get-TimeStamp) Running Network connectivity check."
+    $getfunction = (Get-Command -Type Function connectivity_check)
+    $fullgetfunction = 'Function ' + $getfunction.Name + " {`n" + $getfunction.Definition + "`n}"
+
+    Start-Process powershell -args '-noprofile', '-EncodedCommand', ([Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes("$fullgetfunction; connectivity_check")))
+}
+
+$var_button_howto.Add_Click({
+        $howToText = @"
+1. Login and Register Device in AutoPilot: This will log you in and register your current device in Microsoft Autopilot.
+2. Network Connectivity Check: This checks if your device is connected to the internet.
+3. Device Information: This area displays relevant information about your device like the device model, name, manufacturer, serial number and available storage.
+4. Save Group Tag: You can input a group tag for your device and save it using this functionality.
+5. Start Windows Update: This will start the Windows Update process on your device.
+6. Export Hash to CSV: This will export the hash of your device to a CSV file for future reference or use.
+"@
+        [System.Windows.MessageBox]::Show($howToText, "How does it work?")
+    })
+
+$var_text_author.Text = "@ugurkocde"
+
+function Get-ScriptVersion {
+    $ScriptName = "Get-WindowsAutopilotImportGUI"
+    # Get the currently installed version
+    $LocalVersion = (Get-InstalledScript -Name $ScriptName).Version
+    return $LocalVersion
+}
+
+$var_text_version.text = "Version: " + (Get-ScriptVersion)
+
+# Open GUI
+
+$Null = $window.ShowDialog()
+		</File>
+		<File path="C:\Windows\Setup\Scripts\Specialize.ps1">
+$scripts = @(
+	{
+		net.exe accounts /maxpwage:UNLIMITED;
+	};
+	{
+		reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v SmartScreenEnabled /t REG_SZ /d "Off" /f;
+		reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components" /v ServiceEnabled /t REG_DWORD /d 0 /f;
+		reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components" /v NotifyMalicious /t REG_DWORD /d 0 /f;
+		reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components" /v NotifyPasswordReuse /t REG_DWORD /d 0 /f;
+		reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components" /v NotifyUnsafeApp /t REG_DWORD /d 0 /f;
+		reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Systray" /v HideSystray /t REG_DWORD /d 1 /f;
+	};
+	{
+		reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
+	};
+	{
+		netsh.exe advfirewall firewall set rule group="@FirewallAPI.dll,-28752" new enable=Yes;
+		reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f;
+	};
+	{
+		Set-ExecutionPolicy -Scope 'LocalMachine' -ExecutionPolicy 'RemoteSigned' -Force;
+	};
+	{
+		reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\BitLocker" /v "PreventDeviceEncryption" /t REG_DWORD /d 1 /f;
+	};
+);
+
+&amp; {
+  [float] $complete = 0;
+  [float] $increment = 100 / $scripts.Count;
+  foreach( $script in $scripts ) {
+    Write-Progress -Activity 'Running scripts to customize your Windows installation. Do not close this window.' -PercentComplete $complete;
+    '*** Will now execute command &#xAB;{0}&#xBB;.' -f $(
+      $str = $script.ToString().Trim() -replace '\s+', ' ';
+      $max = 100;
+      if( $str.Length -le $max ) {
+        $str;
+      } else {
+        $str.Substring( 0, $max - 1 ) + '&#x2026;';
+      }
+    );
+    $start = [datetime]::Now;
+    &amp; $script;
+    '*** Finished executing command after {0:0} ms.' -f [datetime]::Now.Subtract( $start ).TotalMilliseconds;
+    "`r`n" * 3;
+    $complete += $increment;
+  }
+} *&gt;&amp;1 &gt;&gt; "C:\Windows\Setup\Scripts\Specialize.log";
+		</File>
+		<File path="C:\Windows\Setup\Scripts\DefaultUser.ps1">
+$scripts = @(
+	{
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Edge\SmartScreenEnabled" /ve /t REG_DWORD /d 0 /f;
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Edge\SmartScreenPuaEnabled" /ve /t REG_DWORD /d 0 /f;
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\AppHost" /v EnableWebContentEvaluation /t REG_DWORD /d 0 /f;
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\AppHost" /v PreventOverride /t REG_DWORD /d 0 /f;
+	};
+);
+
+&amp; {
+  [float] $complete = 0;
+  [float] $increment = 100 / $scripts.Count;
+  foreach( $script in $scripts ) {
+    Write-Progress -Activity 'Running scripts to modify the default user&#x2019;&#x2019;s registry hive. Do not close this window.' -PercentComplete $complete;
+    '*** Will now execute command &#xAB;{0}&#xBB;.' -f $(
+      $str = $script.ToString().Trim() -replace '\s+', ' ';
+      $max = 100;
+      if( $str.Length -le $max ) {
+        $str;
+      } else {
+        $str.Substring( 0, $max - 1 ) + '&#x2026;';
+      }
+    );
+    $start = [datetime]::Now;
+    &amp; $script;
+    '*** Finished executing command after {0:0} ms.' -f [datetime]::Now.Subtract( $start ).TotalMilliseconds;
+    "`r`n" * 3;
+    $complete += $increment;
+  }
+} *&gt;&amp;1 &gt;&gt; "C:\Windows\Setup\Scripts\DefaultUser.log";
+		</File>
+		<File path="C:\Windows\Setup\Scripts\FirstLogon.ps1">
+$scripts = @(
+	{
+		Set-ItemProperty -LiteralPath 'Registry::HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoLogonCount' -Type 'DWord' -Force -Value 0;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\unattend-01.ps1' -Raw | Invoke-Expression;
+	};
+);
+
+&amp; {
+  [float] $complete = 0;
+  [float] $increment = 100 / $scripts.Count;
+  foreach( $script in $scripts ) {
+    Write-Progress -Activity 'Running scripts to finalize your Windows installation. Do not close this window.' -PercentComplete $complete;
+    '*** Will now execute command &#xAB;{0}&#xBB;.' -f $(
+      $str = $script.ToString().Trim() -replace '\s+', ' ';
+      $max = 100;
+      if( $str.Length -le $max ) {
+        $str;
+      } else {
+        $str.Substring( 0, $max - 1 ) + '&#x2026;';
+      }
+    );
+    $start = [datetime]::Now;
+    &amp; $script;
+    '*** Finished executing command after {0:0} ms.' -f [datetime]::Now.Subtract( $start ).TotalMilliseconds;
+    "`r`n" * 3;
+    $complete += $increment;
+  }
+} *&gt;&amp;1 &gt;&gt; "C:\Windows\Setup\Scripts\FirstLogon.log";
+		</File>
+	</Extensions>
+</unattend>
