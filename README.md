@@ -5,7 +5,20 @@
 
 ---
 
-# 🧰 Autopilot-Ready Windows 11 Deployment (25H2)
+---
+
+## ⚠️ Important Note: Temporary Local Admin Account
+
+During the deployment process, a local administrator account named **`tempadmin`** is automatically created on the device to complete setup and Autopilot enrollment tasks.
+
+> 🔒 **Security Reminder:**  
+> This account is intended for temporary use only and should be removed after deployment.  
+> As a bonus, this repository includes an **Intune remediation script** that automatically detects and removes the `tempadmin` account post-enrollment.
+
+---
+
+
+# 🧰 Autopilot-Ready Windows 11 Deployment (25H2) - 
 
 ## 💡 Overview
 This project automates the **end-to-end Autopilot onboarding** process for Windows 11 devices using a custom `autounattend.xml`.
@@ -70,4 +83,12 @@ Your USB should be **bootable** and contain both the **Windows 11 ISO files** an
 
 
 Your USB should be **bootable** and contain both the **Windows 11 ISO files** and your custom `autounattend.xml` at the root.
+
+---
+
+## 🚀 From boot to OOBE in two touches — *Autopilot, the way it should be.*
+
+
+
+
 
